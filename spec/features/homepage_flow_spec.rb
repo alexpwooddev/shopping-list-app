@@ -11,10 +11,10 @@ RSpec.feature "HomepageFlows", type: :feature do
       end
     end
     context "when the user is authenticated" do
-      it "renders a page with their todo items" do
-        sign_in user
+      it "renders a page with their Lists" do
+        login_as(user, :scope => :user)
         visit authenticated_root_path
-        expect(page).to have_content("My To Do Items")
+        expect(page).to have_content("My Lists")
         expect(page).to have_current_path(authenticated_root_path)
       end
     end    
