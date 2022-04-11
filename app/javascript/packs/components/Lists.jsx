@@ -18,10 +18,8 @@ const Lists = ({toggleCompletedLists, hideCompletedLists, ...props}) => {
                 <table className="table">
                     <thead>
                     <tr>
-                        <th scope="col">Status</th>
-                        <th scope="col">Item</th>
+                        <th scope="col">List Name</th>
                         <th scope="col" className="text-right">
-                            Actions
                         </th>
                     </tr>
                     </thead>

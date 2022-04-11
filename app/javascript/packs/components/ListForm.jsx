@@ -45,7 +45,7 @@ const ListForm = ({ createList, handleErrors, clearErrors }) => {
                 </div>
                 <div className="form-group col-md-4">
                     <button className="btn btn-outline-success btn-block">
-                        Add List
+                        Add New List
                     </button>
                 </div>
             </div>
