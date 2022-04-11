@@ -8,3 +8,9 @@ User.all.each do |u|
     u.lists.create(title: "List #{i+1} for #{u.email}", complete: i % 3 ? true : false )
   end
 end
+
+Product.create({:name=>"tomato", :description => "single fresh tomato"})
+Product.create({:name=>"milk", :description => "full fat milk"})
+Product.create({:name=>"bread", :description => "sliced white break"})
+Product.create({:name=>"bacon", :description => "streaky bacon"})
+Product.create({:name=>"cheese", :description => "aged cheddar"})
