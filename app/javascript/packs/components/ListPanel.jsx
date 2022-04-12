@@ -2,31 +2,51 @@ import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
-import { ListItems, ListItem, ListItemForm, Spinner, ErrorMessage } from "./";
+import { ListItems, ListItem, ListItemForm, Spinner, ErrorMessage } from './';
 
 const ListPanel = () => {
     const [listItems, setListItems] = useState([]);
+    const [products, setProducts] = useState([]);
     const [hideCompletedListItems, setHideCompletedListItems] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
     const listId = window.location.pathname.split('/')[2];
-    const path = `/api/v1/lists/${listId}/list_items`
+    const listItemsPath = `/api/v1/lists/${listId}/list_items`;
+    const productsPath = `/api/v1/products`;
 
     useEffect(() => {
         getListItems();
-    }, [])
+        getProducts();
+    }, []);
+
+    //TO DO  - refine this so I don't need to request ALL products from the API
+    const getProducts = () => {
+        axios.get(productsPath)
+            .then(response => {
+                clearErrors();
+                setIsLoading(true);
+                const retrievedProducts = response.data;
+                setProducts(retrievedProducts);
+                setIsLoading(false);
+            })
+            .catch(error => {
+                console.log(error);
+                setIsLoading(true);
+                setErrorMessage( {message: "There was an error loading your list..."})
+            });
+    }
 
     const getListItems = () => {
-        axios.get(path)
+        axios.get(listItemsPath)
             .then(response => {
                 clearErrors();
                 setIsLoading(true);
                 const retrievedListItems = response.data;
-                console.log(retrievedListItems);
                 setListItems(retrievedListItems);
                 setIsLoading(false);
             })
             .catch(error => {
+                console.log(error);
                 setIsLoading(true);
                 setErrorMessage({message: "There was an error loading your list..."});
             });
@@ -69,6 +89,7 @@ const ListPanel = () => {
                                 key={item.id}
                                 listId={listId}
                                 listItem={item}
+                                products={products}
                                 getListItems={getListItems}
                                 hideCompletedListItems={hideCompletedListItems}
                                 handleErrors={handleErrors}

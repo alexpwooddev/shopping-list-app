@@ -1,6 +1,6 @@
 class Api::V1::ListItemsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_list, only: [:show, :update, :destroy]
+  before_action :set_list, only: [:show, :create, :update, :destroy]
   before_action :set_list_item, only: [:show, :update, :destroy]
 
   def index
@@ -19,11 +19,11 @@ class Api::V1::ListItemsController < ApplicationController
   end
 
   def create
-    @list_item = @list.build(list_item_params)
+    @list_item = @list.list_items.build(list_item_params)
     if authorized?
       respond_to do |format|
         if @list_item.save
-          format.json { render :show, status: :created, location: api_v1_list_list_item_path(@list_item) }
+          format.json { render :show, status: :created, location: api_v1_list_list_items_path(@list_item) }
         else
           format.json { render json: @list_item.errors, status: :unprocessable_entity }
         end
@@ -37,7 +37,7 @@ class Api::V1::ListItemsController < ApplicationController
     if authorized?
       respond_to do |format|
         if @list_item.update(list_item_params)
-          format.json { render :show, status: ok, location: api_v1_list_list_item_path(@list_item) }
+          format.json { render :show, status: :ok, location: api_v1_list_list_item_path(@list_item) }
         else
           format.json { render json: @list_item.errors, status: :unprocessable_entity }
         end
@@ -62,6 +62,7 @@ class Api::V1::ListItemsController < ApplicationController
 
   def set_list
     @list = List.find(params[:list_id])
+    puts @list
   end
 
   def set_list_item
@@ -69,7 +70,7 @@ class Api::V1::ListItemsController < ApplicationController
   end
 
   def authorized?
-    @list_item.list.user = current_user
+    @list.user == current_user
   end
 
   def handle_unauthorized

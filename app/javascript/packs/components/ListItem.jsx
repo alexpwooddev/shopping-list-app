@@ -5,11 +5,13 @@ import _ from "lodash";
 
 import setAxiosHeaders from "./AxiosHeaders";
 
-const ListItem = ({listId, listItem, getListItems, hideCompletedListItems, handleErrors, clearErrors}) => {
+const ListItem = ({listId, listItem, products, getListItems, hideCompletedListItems, handleErrors, clearErrors}) => {
     const [complete, setComplete] = useState(listItem.complete);
     const completedRef = useRef();
-    const inputRef = useRef();
     const path = `/api/v1/lists/${listId}/list_items/${listItem.id}`
+    const listItemProduct = products.filter(product => {
+        return product.id === listItem.product_id;
+    })?.[0];
 
     const handleChange = () => {
         setComplete(completedRef.current.checked);
@@ -50,16 +52,10 @@ const ListItem = ({listId, listItem, getListItems, hideCompletedListItems, handl
 
     return (
         <tr className={`${ complete && hideCompletedListItems ? `d-none` : "" } ${complete ? "table-light" : ""}`}>
-            <td>
-                <input
-                    type="text"
-                    defaultValue={listItem.title}
-                    disabled={complete}
-                    onChange={handleChange}
-                    ref={inputRef}
-                    className="form-control"
-                    id={`list__title-${listItem.id}`}
-                />
+            <td className="align-middle">
+                <p>
+                    {listItemProduct && listItemProduct.name}
+                </p>
             </td>
             <td className="text-right">
                 <div className="form-check form-check-inline">
@@ -90,6 +86,7 @@ export default ListItem
 ListItem.propTypes = {
     listId: PropTypes.string.isRequired,
     listItem: PropTypes.object.isRequired,
+    products: PropTypes.array.isRequired,
     getListItems: PropTypes.func.isRequired,
     hideCompletedListItems: PropTypes.bool.isRequired,
     handleErrors: PropTypes.func.isRequired,

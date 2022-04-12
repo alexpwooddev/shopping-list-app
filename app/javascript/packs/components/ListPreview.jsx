@@ -79,7 +79,8 @@ const ListPreview = ({list, getLists, hideCompletedLists, handleErrors, clearErr
                         Complete?
                     </label>
                 </div>
-                <button onClick={handleDestroy} className="btn btn-outline-danger">Delete</button>
+                <a href={`/lists/${list.id}`} className="btn btn-outline-primary mx-1">Edit</a>
+                <button onClick={handleDestroy} className="btn btn-outline-danger mx-1">Delete</button>
             </td>
         </tr>
     )
