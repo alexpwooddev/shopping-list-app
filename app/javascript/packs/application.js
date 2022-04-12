@@ -12,6 +12,7 @@ Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
 
-require("./components/ListApp")
+require("./components/ListsPanel")
+require("./components/ListPanel")
 require('bootstrap')
 import 'bootstrap/dist/css/bootstrap'

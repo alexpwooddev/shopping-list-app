@@ -3,14 +3,14 @@ require 'rails_helper'
 RSpec.feature "ListsFlows", type: :feature do
   describe "creating a list", js: true do
     let(:user) { FactoryBot.create(:user) }
-    valid_list = 'this is a new note'
+    valid_list = 'this is a new list'
     in_valid_list = ''
     it "creates a new list on the top of the list" do
       login_as(user, :scope => :user)
       visit root_path
       fill_in('title', with: valid_list)
-      click_button('Add List')
-      new_list = find('.table > tbody > tr:first-of-type td:nth-child(2) input:first-of-type')
+      click_button('Add New ListPreview')
+      new_list = find('.table > tbody > tr:first-of-type td:nth-child(1) input:first-of-type')
       expect(new_list.value).to eq(valid_list)
     end
   end
@@ -26,7 +26,7 @@ RSpec.feature "ListsFlows", type: :feature do
         find("#list__title-#{list.id}").send_keys(updated_list_text)
         sleep 2
         visit root_path
-        updated_list = find('.table > tbody > tr:first-of-type td:nth-child(2) input:first-of-type')
+        updated_list = find('.table > tbody > tr:first-of-type td:nth-child(1) input:first-of-type')
         expect(updated_list.value).to eq(list.title + updated_list_text)
       end
     end
@@ -47,7 +47,7 @@ RSpec.feature "ListsFlows", type: :feature do
       login_as(user_with_lists, :scope => :user)
       visit root_path
       list = user_with_lists.lists.first
-      row = find(".table > tbody > tr:first-of-type td:nth-child(3)")
+      row = find(".table > tbody > tr:first-of-type td:nth-child(2)")
       accept_confirm do
         row.click_button("Delete")
       end

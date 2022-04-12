@@ -5,25 +5,25 @@ import _ from "lodash";
 
 import setAxiosHeaders from "./AxiosHeaders";
 
-const List = ({list, getLists, hideCompletedLists, handleErrors, clearErrors}) => {
-    const [complete, setComplete] = useState(list.complete);
+const ListItem = ({listId, listItem, getListItems, hideCompletedListItems, handleErrors, clearErrors}) => {
+    const [complete, setComplete] = useState(listItem.complete);
     const completedRef = useRef();
     const inputRef = useRef();
-    const path = `/api/v1/lists/${list.id}`
+    const path = `/api/v1/lists/${listId}/list_items/${listItem.id}`
 
     const handleChange = () => {
         setComplete(completedRef.current.checked);
-        updateList();
+        updateListItem();
     }
 
-    const updateList = _.debounce(() => {
+    const updateListItem = _.debounce(() => {
         setAxiosHeaders();
         axios
             .put(path, {
-                list: {
-                    title: inputRef.current.value,
-                    complete: completedRef.current.checked
-                }
+                list_item: {
+                    product_id: 2,
+                    quantity: 3,
+                },
             })
             .then(response => {
                 clearErrors();
@@ -40,7 +40,7 @@ const List = ({list, getLists, hideCompletedLists, handleErrors, clearErrors}) =
             axios
                 .delete(path)
                 .then(response => {
-                    getLists();
+                    getListItems();
                 })
                 .catch(error => {
                     console.log(error);
@@ -49,16 +49,16 @@ const List = ({list, getLists, hideCompletedLists, handleErrors, clearErrors}) =
     }
 
     return (
-        <tr className={`${ complete && hideCompletedLists ? `d-none` : "" } ${complete ? "table-light" : ""}`}>
+        <tr className={`${ complete && hideCompletedListItems ? `d-none` : "" } ${complete ? "table-light" : ""}`}>
             <td>
                 <input
                     type="text"
-                    defaultValue={list.title}
+                    defaultValue={listItem.title}
                     disabled={complete}
                     onChange={handleChange}
                     ref={inputRef}
                     className="form-control"
-                    id={`list__title-${list.id}`}
+                    id={`list__title-${listItem.id}`}
                 />
             </td>
             <td className="text-right">
@@ -70,11 +70,11 @@ const List = ({list, getLists, hideCompletedLists, handleErrors, clearErrors}) =
                         onChange={handleChange}
                         ref={completedRef}
                         className="form-check-input"
-                        id={`complete-${list.id}`}
+                        id={`complete-${listItem.id}`}
                     />
                     <label
                         className="form-check-label"
-                        htmlFor={`complete-${list.id}`}
+                        htmlFor={`complete-${listItem.id}`}
                     >
                         Complete?
                     </label>
@@ -85,12 +85,13 @@ const List = ({list, getLists, hideCompletedLists, handleErrors, clearErrors}) =
     )
 }
 
-export default List
+export default ListItem
 
-List.propTypes = {
-    list: PropTypes.object.isRequired,
-    getLists: PropTypes.func.isRequired,
-    hideCompletedLists: PropTypes.bool.isRequired,
+ListItem.propTypes = {
+    listId: PropTypes.string.isRequired,
+    listItem: PropTypes.object.isRequired,
+    getListItems: PropTypes.func.isRequired,
+    hideCompletedListItems: PropTypes.bool.isRequired,
     handleErrors: PropTypes.func.isRequired,
     clearErrors: PropTypes.func.isRequired,
 }

@@ -18,9 +18,10 @@ ActiveRecord::Schema.define(version: 2022_04_11_060303) do
   create_table "list_items", force: :cascade do |t|
     t.integer "quantity", default: 1
     t.integer "product_id"
-    t.integer "list_id"
+    t.bigint "list_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["list_id"], name: "index_list_items_on_list_id"
   end
 
   create_table "lists", force: :cascade do |t|
@@ -51,5 +52,6 @@ ActiveRecord::Schema.define(version: 2022_04_11_060303) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "list_items", "lists"
   add_foreign_key "lists", "users"
 end

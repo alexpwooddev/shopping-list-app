@@ -2,13 +2,9 @@ import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
-import Lists from "./Lists";
-import List from "./List";
-import ListForm from "./ListForm";
-import Spinner from "./Spinner";
-import ErrorMessage from "./ErrorMessage"
+import { Lists, ListPreview, ListForm, Spinner, ErrorMessage } from './'
 
-const ListApp = () => {
+const ListsPanel = () => {
     const [lists, setLists] = useState([]);
     const [hideCompletedLists, setHideCompletedLists] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -66,7 +62,7 @@ const ListApp = () => {
                         toggleCompletedLists={toggleCompletedLists}
                         hideCompletedLists={hideCompletedLists}>
                         {lists.map(list => (
-                            <List
+                            <ListPreview
                                 key={list.id}
                                 list={list}
                                 getLists={getLists}
@@ -83,7 +79,9 @@ const ListApp = () => {
     );
 }
 
+export default ListsPanel;
+
 document.addEventListener('turbolinks:load', () => {
-    const app = document.getElementById('list-app');
-    app && ReactDOM.render(<ListApp/>, app);
+    const app = document.getElementById('lists-panel');
+    app && ReactDOM.render(<ListsPanel/>, app);
 })

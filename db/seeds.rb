@@ -11,7 +11,7 @@ Product.create({:name=>"cheese", :description => "aged cheddar"})
 
 User.all.each do |u|
   10.times do |i|
-    u.lists.create(title: "List #{i+1} for #{u.email}", complete: i % 3 ? true : false )
+    u.lists.create(title: "ListPreview #{i+1} for #{u.email}", complete: i % 3 ? true : false )
   end
 end
 

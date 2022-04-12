@@ -5,22 +5,21 @@ import axios from 'axios'
 import setAxiosHeaders from "./AxiosHeaders";
 
 
-const ListForm = ({ createList, handleErrors, clearErrors }) => {
-    const titleRef = useRef();
-
+const ListItemForm = ({ createListItem, listId, handleErrors, clearErrors }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setAxiosHeaders();
+        //TO DO - update this to have a drop down to select a product OR a search
         axios
-            .post('/api/v1/lists', {
-                list: {
-                    title: titleRef.current.value,
-                    complete: false,
+            .post(`/api/v1/lists/${listId}/list_items`, {
+                list_item: {
+                    product_id: 1,
+                    quantity: 1,
                 },
             })
             .then(response => {
-                const list = response.data;
-                createList(list);
+                const listItem = response.data;
+                createListItem(listItem);
                 clearErrors();
             })
             .catch(error => {
@@ -32,20 +31,9 @@ const ListForm = ({ createList, handleErrors, clearErrors }) => {
     return (
         <form onSubmit={handleSubmit} className={"my-3"}>
             <div className={"form-row"}>
-                <div className="form-group col-md-8">
-                    <input
-                    type="text"
-                    name="title"
-                    ref={titleRef}
-                    required
-                    className="form-control"
-                    id="title"
-                    placeholder="Write your list here..."
-                    />
-                </div>
                 <div className="form-group col-md-4">
                     <button className="btn btn-outline-success btn-block">
-                        Add New List
+                        Add New Item
                     </button>
                 </div>
             </div>
@@ -53,11 +41,12 @@ const ListForm = ({ createList, handleErrors, clearErrors }) => {
     )
 }
 
-export default ListForm
+export default ListItemForm
 
-ListForm.propTypes = {
-    createList: PropTypes.func.isRequired,
+ListItemForm.propTypes = {
+    createListItem: PropTypes.func.isRequired,
     handleErrors: PropTypes.func.isRequired,
     clearErrors: PropTypes.func.isRequired,
+    listId: PropTypes.string.isRequired,
 }
 
