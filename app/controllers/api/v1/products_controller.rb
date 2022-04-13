@@ -7,13 +7,9 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   def show
-    if authorized?
       respond_to do |format|
         format.json { render :show }
       end
-    else
-      handle_unauthorized
-    end
   end
 
   private

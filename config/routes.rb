@@ -2,9 +2,9 @@ Rails.application.routes.draw do
   devise_for :users
   authenticated :user do
     root "pages#my_lists", as: :authenticated_root
-    get 'lists/:id', to: 'pages#list'
   end
   root 'pages#home'
+  get 'lists/:id', to: 'pages#list'
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resources :products, only: [:index, :show]
@@ -13,5 +13,5 @@ Rails.application.routes.draw do
       end
     end
   end
-  get '*path', to: 'pages#home', via: :all
+  #get '*path', to: 'pages#home', via: :all
 end

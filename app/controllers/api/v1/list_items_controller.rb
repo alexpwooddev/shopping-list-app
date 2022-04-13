@@ -1,17 +1,21 @@
 class Api::V1::ListItemsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_list, only: [:show, :create, :update, :destroy]
+  before_action :set_list, only: [:index, :show, :create, :update, :destroy]
   before_action :set_list_item, only: [:show, :update, :destroy]
 
   def index
-    list_id = params[:list_id]
-    @list_items = ListItem.where(list_id: list_id)
+    if authorized?
+      list_id = params[:list_id]
+      @list_items = ListItem.where(list_id: list_id)
+    else
+      handle_unauthorized
+    end
   end
 
   def show
     if authorized?
       respond_to do |format|
-        format.json {render :show}
+        format.json { render :show }
       end
     else
       handle_unauthorized

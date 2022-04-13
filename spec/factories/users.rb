@@ -13,6 +13,26 @@ FactoryBot.define do
       end
     end
 
+    factory :user_with_lists_with_items do
+      transient do
+        lists_count { 5 }
+      end
+
+      after(:create) do |user, evaluator|
+        create_list(:list_with_items, evaluator.lists_count, user: user)
+      end
+    end
+
+    factory :user_with_lists_with_items_diff_age do
+      transient do
+        lists_count { 5 }
+      end
+
+      after(:create) do |user, evaluator|
+        create_list(:list_with_items_diff_age, evaluator.lists_count, user: user)
+      end
+    end
+
     factory :user_with_completed_lists do
       transient do
         lists_count { 5 }

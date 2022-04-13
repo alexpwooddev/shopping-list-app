@@ -9,7 +9,7 @@ RSpec.feature "ListsFlows", type: :feature do
       login_as(user, :scope => :user)
       visit root_path
       fill_in('title', with: valid_list)
-      click_button('Add New ListPreview')
+      click_button('Add New List')
       new_list = find('.table > tbody > tr:first-of-type td:nth-child(1) input:first-of-type')
       expect(new_list.value).to eq(valid_list)
     end
