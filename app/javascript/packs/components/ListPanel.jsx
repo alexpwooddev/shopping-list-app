@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
-import { ListItems, ListItem, ListItemForm, Spinner, ErrorMessage } from './';
+import { ListItems, ListItem, ProductSearchPanel, Spinner, ErrorMessage, ImageUpload } from './';
 
 const ListPanel = () => {
     const [listItems, setListItems] = useState([]);
@@ -76,7 +76,8 @@ const ListPanel = () => {
             )}
             {!isLoading && (
                 <>
-                    <ListItemForm
+                    <ImageUpload />
+                    <ProductSearchPanel
                         createListItem={createListItem}
                         listId={listId}
                         handleErrors={handleErrors}
