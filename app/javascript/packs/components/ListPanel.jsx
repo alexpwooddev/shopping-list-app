@@ -80,7 +80,9 @@ const ListPanel = () => {
                         createListItem={createListItem}
                         listId={listId}
                         handleErrors={handleErrors}
-                        clearErrors={clearErrors}/>
+                        clearErrors={clearErrors}
+                        products={products}
+                    />
                     <ListItems
                         toggleCompletedListItems={toggleCompletedListItems}
                         hideCompletedListItems={hideCompletedListItems}>
