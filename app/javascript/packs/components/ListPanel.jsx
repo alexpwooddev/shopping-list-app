@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { ListItems, ListItem, ProductSearchPanel, Spinner, ErrorMessage, ImageUpload } from './';
 
@@ -13,6 +15,8 @@ const ListPanel = () => {
     const listId = window.location.pathname.split('/')[2];
     const listItemsPath = `/api/v1/lists/${listId}/list_items`;
     const productsPath = `/api/v1/products`;
+
+    const notifyItemsUpdate = () => toast.success("Item/s added");
 
     useEffect(() => {
         getListItems();
@@ -55,12 +59,13 @@ const ListPanel = () => {
     const createListItem = (listItemToCreate) => {
         const newListItems = [listItemToCreate, ...listItems];
         setListItems(newListItems);
+        notifyItemsUpdate();
     }
 
     const createListItems = (listItemsToCreate) => {
-        console.log(`creating new items: ${listItemsToCreate}`);
         const newListItems = [...listItemsToCreate, ...listItems];
         setListItems(newListItems);
+        notifyItemsUpdate();
     }
 
     const toggleCompletedListItems = () => {
@@ -73,6 +78,10 @@ const ListPanel = () => {
 
     const clearErrors = () => {
         setErrorMessage(null);
+    }
+
+    const toggleLoading = (loadingState) => {
+        setIsLoading(loadingState);
     }
 
     return (
@@ -115,6 +124,12 @@ const ListPanel = () => {
                 </>
             )}
             {isLoading && <Spinner />}
+            <ToastContainer
+                position="bottom-right"
+                autoClose={2000}
+                hideProgressBar={true}
+                closeOnClick
+            />
         </>
     );
 }

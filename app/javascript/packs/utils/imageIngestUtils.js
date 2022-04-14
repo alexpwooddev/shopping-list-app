@@ -26,3 +26,22 @@ export const getWordsFromImage = async (url) => {
 
     return responseWords;
 }
+
+export const matchWordsFromImageProductIds = (wordsFromImage, products) => {
+    const productNames = products.map(product => product.name);
+    const productsMatchedAgainstWordsFromImage = [];
+
+    wordsFromImage?.forEach(word => {
+        if (productNames.includes(word)) productsMatchedAgainstWordsFromImage.push(word);
+    });
+
+    return productsMatchedAgainstWordsFromImage.map(matchedProduct => {
+        let matchedId;
+        products.forEach(product => {
+            if (product.name === matchedProduct) {
+                matchedId = product.id;
+            }
+        });
+        return matchedId;
+    });
+}

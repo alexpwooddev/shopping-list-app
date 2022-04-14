@@ -1,26 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 
-const SearchBar = ({ searchQuery, setSearchQuery, toggleSearchFocus }) => {
+const SearchBar = ({searchQuery, setSearchQuery, toggleSearchFocus}) => {
     const onSubmit = e => {
         e.preventDefault();
     }
 
     return (
-        <form action="/" method="get" autoComplete="off" onFocus={toggleSearchFocus} onBlur={toggleSearchFocus} onSubmit={onSubmit}>
-            <label htmlFor="product-search">
-                <span className="visually-hidden">Search Products and click to add them to your list...</span>
-            </label>
-            <input
-                value={searchQuery}
-                onInput={e => setSearchQuery(e.target.value)}
-                type="text"
-                id="product-search"
-                placeholder="Search Products and click to add them to your list..."
-                className="form-control"
-                name="s"
-            />
-        </form>
+        <>
+            <form
+                className="mt-3"
+                action="/"
+                method="get"
+                autoComplete="off"
+                onFocus={toggleSearchFocus}
+                onBlur={toggleSearchFocus}
+                onSubmit={onSubmit}
+            >
+                <label htmlFor="product-search">
+                    Or search Products and click to add them:
+                </label>
+                <input
+                    value={searchQuery}
+                    onInput={e => setSearchQuery(e.target.value)}
+                    type="text"
+                    id="product-search"
+                    placeholder="Search..."
+                    className="form-control"
+                    name="s"
+                />
+            </form>
+        </>
     )
 
 }
