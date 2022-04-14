@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     root "pages#my_lists", as: :authenticated_root
   end
   root 'pages#home'
-  get 'lists/:id', to: 'pages#list'
+  get 'lists/:id', to: 'pages#list', as: :list
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resources :products, only: [:index, :show]

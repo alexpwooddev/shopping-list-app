@@ -4,7 +4,6 @@ RSpec.feature "ListsFlows", type: :feature do
   describe "creating a list", js: true do
     let(:user) { FactoryBot.create(:user) }
     valid_list = 'this is a new list'
-    in_valid_list = ''
     it "creates a new list on the top of the list" do
       login_as(user, :scope => :user)
       visit root_path

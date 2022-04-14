@@ -6,7 +6,7 @@ import {getWordsFromImage, matchWordsFromImageProductIds} from "../utils/imageIn
 import {setAxiosHeaders, Spinner} from "./";
 
 
-const ImageUpload = ({createListItems, listId, handleErrors, clearErrors, products}) => {
+const ImageUpload = ({createListItems, listId, handleErrors, clearErrors, products, notifyNoItemsMatched}) => {
     const [image, setImage] = useState("");
     const [url, setUrl] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +35,11 @@ const ImageUpload = ({createListItems, listId, handleErrors, clearErrors, produc
         const wordsFromImage = await getWordsFromImage(url);
         const listItemsToCreate = [];
         const matchedProductIds = matchWordsFromImageProductIds(wordsFromImage, products);
+        if (matchedProductIds.length === 0) {
+            setIsLoading(false);
+            notifyNoItemsMatched();
+            return;
+        }
 
         const postAllMatchedProducts = () => {
             return Promise.all(matchedProductIds.map(matchedProductId => {
@@ -90,4 +95,5 @@ ImageUpload.propTypes = {
     clearErrors: PropTypes.func.isRequired,
     listId: PropTypes.string.isRequired,
     products: PropTypes.array.isRequired,
+    notifyNoItemsMatched: PropTypes.func.isRequired,
 }

@@ -58,6 +58,7 @@ const ProductSearchPanel = ({createListItem, listId, handleErrors, clearErrors, 
                 {filteredProducts.map((product) => (
                     <button
                         key={product.id}
+                        id={product.id}
                         className="list-group-item list-group-item-action"
                         onClick={(e) => {
                             handleProductClick(e, product.id)

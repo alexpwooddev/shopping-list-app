@@ -8,9 +8,8 @@ const Lists = ({toggleCompletedListItems, hideCompletedListItems, ...props}) => 
 
     return (
         <>
-            <hr/>
             <button
-                className="btn btn-outline-primary btn-block mb-3"
+                className="btn btn-outline-primary btn-block mt-4"
                 onClick={handleClick}>
                 {hideCompletedListItems ? 'Show Completed Items' : 'Hide Completed Items'}
             </button>
@@ -19,6 +18,7 @@ const Lists = ({toggleCompletedListItems, hideCompletedListItems, ...props}) => 
                     <thead>
                     <tr>
                         <th scope="col">Item</th>
+                        <th scope="col">Quantity</th>
                         <th scope="col" className="text-right">
                         </th>
                     </tr>

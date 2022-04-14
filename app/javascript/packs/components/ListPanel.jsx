@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { ListItems, ListItem, ProductSearchPanel, Spinner, ErrorMessage, ImageUpload } from './';
+import {ListItems, ListItem, ProductSearchPanel, Spinner, ErrorMessage, ImageUpload} from './';
 
 const ListPanel = () => {
     const [listItems, setListItems] = useState([]);
@@ -17,6 +17,7 @@ const ListPanel = () => {
     const productsPath = `/api/v1/products`;
 
     const notifyItemsUpdate = () => toast.success("Item/s added");
+    const notifyNoItemsMatched = () => toast.error("No valid products found in image")
 
     useEffect(() => {
         getListItems();
@@ -36,7 +37,7 @@ const ListPanel = () => {
             .catch(error => {
                 console.log(error);
                 setIsLoading(true);
-                setErrorMessage( {message: "There was an error loading your list..."})
+                setErrorMessage({message: "There was an error loading your list..."})
             });
     }
 
@@ -84,6 +85,37 @@ const ListPanel = () => {
         setIsLoading(loadingState);
     }
 
+    const listItemsToRender = () => {
+        const itemsCount = {};
+        const itemsAlreadyRendered = {};
+
+        listItems.forEach(item => {
+            itemsCount[item.product_id] = (itemsCount[item.product_id] || 0) + 1;
+        })
+
+        return listItems.map(item => {
+            if (itemsAlreadyRendered[item.product_id]) {
+                return;
+            }
+            else {
+                itemsAlreadyRendered[item.product_id] = true;
+                return <ListItem
+                    key={item.id}
+                    listId={listId}
+                    listItem={item}
+                    itemCount={itemsCount[item.product_id]}
+                    products={products}
+                    getListItems={getListItems}
+                    hideCompletedListItems={hideCompletedListItems}
+                    handleErrors={handleErrors}
+                    clearErrors={clearErrors}
+                />
+            }
+        });
+    }
+
+
+
     return (
         <>
             {errorMessage && (
@@ -97,6 +129,7 @@ const ListPanel = () => {
                         handleErrors={handleErrors}
                         clearErrors={clearErrors}
                         products={products}
+                        notifyNoItemsMatched={notifyNoItemsMatched}
                     />
                     <ProductSearchPanel
                         createListItem={createListItem}
@@ -108,22 +141,11 @@ const ListPanel = () => {
                     <ListItems
                         toggleCompletedListItems={toggleCompletedListItems}
                         hideCompletedListItems={hideCompletedListItems}>
-                        {listItems.map(item => (
-                            <ListItem
-                                key={item.id}
-                                listId={listId}
-                                listItem={item}
-                                products={products}
-                                getListItems={getListItems}
-                                hideCompletedListItems={hideCompletedListItems}
-                                handleErrors={handleErrors}
-                                clearErrors={clearErrors}
-                            />
-                        ))}
+                        {listItemsToRender()}
                     </ListItems>
                 </>
             )}
-            {isLoading && <Spinner />}
+            {isLoading && <Spinner/>}
             <ToastContainer
                 position="bottom-right"
                 autoClose={2000}
