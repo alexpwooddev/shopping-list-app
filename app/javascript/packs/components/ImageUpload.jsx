@@ -1,38 +1,15 @@
 import React, {useState, useEffect} from 'react';
+import PropTypes from 'prop-types';
 
-const getWordsFromImage = (url) => {
-    const apiKey = process.env.COMPUTER_VISION_API_KEY;
-    const computerVisionApiOptions = {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json',
-            'X-RapidAPI-Host': 'microsoft-computer-vision3.p.rapidapi.com',
-            'X-RapidAPI-Key': `${apiKey}`
-        },
-        body: `{"url":"${url}"}`
-    };
-    let responseWords = [];
-
-    fetch('https://microsoft-computer-vision3.p.rapidapi.com/ocr?detectOrientation=true&language=unk', computerVisionApiOptions)
-        .then(response => response.json())
-        .then(response => {
-            response?.regions?.forEach(region => {
-                region.lines.forEach(line => {
-                    line.words.forEach(word => {
-                        responseWords.push(word.text);
-                    })
-                })
-            });
-        })
-        .catch(err => console.error(err));
-
-    return responseWords;
-}
+import {getWordsFromImage} from "../utils/getWordsFromImage";
+import {setAxiosHeaders} from "./index";
+import axios from "axios";
 
 
-const ImageUpload = () => {
+const ImageUpload = ({createListItems, listId, handleErrors, clearErrors, products}) => {
     const [image, setImage] = useState("");
     const [url, setUrl] = useState("");
+    const productNames = products.map(product => product.name);
 
     const processImage = () => {
         const data = new FormData()
@@ -51,12 +28,71 @@ const ImageUpload = () => {
             .catch(err => console.log(err))
     }
 
+    const matchImageWordsWithProducts = async (url) => {
+        const wordsFromImage = await getWordsFromImage(url);
+        const productsMatchedAgainstWordsFromImage = [];
+        const listItemsToCreate = [];
+        wordsFromImage?.forEach(word => {
+            if (productNames.includes(word)) productsMatchedAgainstWordsFromImage.push(word);
+        });
+        console.log(productsMatchedAgainstWordsFromImage);
+
+        const matchedProductIds = productsMatchedAgainstWordsFromImage.map(matchedProduct => {
+           let matchedId;
+            products.forEach(product => {
+               if (product.name === matchedProduct) {
+                   matchedId = product.id;
+               }
+           });
+            return matchedId;
+        });
+
+ /*       matchedProductIds.forEach(matchedProductId => {
+            setAxiosHeaders();
+            axios
+                .post(`/api/v1/lists/${listId}/list_items`, {
+                    list_item: {
+                        product_id: matchedProductId,
+                        quantity: 1,
+                    },
+                })
+                .then(response => {
+                    const listItem = response.data;
+                    listItemsToCreate.push(listItem);
+                    clearErrors();
+                })
+                .catch(error => {
+                    handleErrors(error);
+                })
+        });*/
+
+        await Promise.all(matchedProductIds.map(matchedProductId => {
+            setAxiosHeaders();
+            axios
+                .post(`/api/v1/lists/${listId}/list_items`, {
+                    list_item: {
+                        product_id: matchedProductId,
+                        quantity: 1,
+                    },
+                })
+                .then(response => {
+                    const listItem = response.data;
+                    listItemsToCreate.push(listItem);
+                    console.log(`pushed ${listItem} to array: ${listItemsToCreate}`);
+                    clearErrors();
+                })
+                .catch(error => {
+                    handleErrors(error);
+                })
+        }))
+        //this is running before those axios posts hit their .then block and push the returned item
+        createListItems(listItemsToCreate);
+    }
+
     useEffect(() => {
-        let wordsFromImage;
         if (url) {
-            wordsFromImage = getWordsFromImage(url);
+            matchImageWordsWithProducts(url);
         }
-        console.log(wordsFromImage);
     }, [url])
 
     return (
@@ -72,3 +108,11 @@ const ImageUpload = () => {
 }
 
 export default ImageUpload
+
+ImageUpload.propTypes = {
+    createListItems: PropTypes.func.isRequired,
+    handleErrors: PropTypes.func.isRequired,
+    clearErrors: PropTypes.func.isRequired,
+    listId: PropTypes.string.isRequired,
+    products: PropTypes.array.isRequired,
+}

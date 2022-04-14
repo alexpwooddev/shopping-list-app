@@ -52,8 +52,14 @@ const ListPanel = () => {
             });
     }
 
-    const createListItem = (listItem) => {
-        const newListItems = [listItem, ...listItems];
+    const createListItem = (listItemToCreate) => {
+        const newListItems = [listItemToCreate, ...listItems];
+        setListItems(newListItems);
+    }
+
+    const createListItems = (listItemsToCreate) => {
+        console.log(`creating new items: ${listItemsToCreate}`);
+        const newListItems = [...listItemsToCreate, ...listItems];
         setListItems(newListItems);
     }
 
@@ -76,7 +82,13 @@ const ListPanel = () => {
             )}
             {!isLoading && (
                 <>
-                    <ImageUpload />
+                    <ImageUpload
+                        createListItems={createListItems}
+                        listId={listId}
+                        handleErrors={handleErrors}
+                        clearErrors={clearErrors}
+                        products={products}
+                    />
                     <ProductSearchPanel
                         createListItem={createListItem}
                         listId={listId}
