@@ -36,6 +36,7 @@ const ProductSearchPanel = ({createListItem, listId, handleErrors, clearErrors, 
                 },
             })
             .then(response => {
+                console.log(response);
                 const listItem = response.data;
                 createListItem(listItem);
                 clearErrors();

@@ -25,27 +25,22 @@ class Api::V1::ListItemsController < ApplicationController
   def create
     @list_item = @list.list_items.build(list_item_params)
     if authorized?
-      if list_item_is_unique
-        # i.e. create
+=begin
+      if list_item_doesnt_already_exist(@list_item)
+=end
         respond_to do |format|
           if @list_item.save
+            puts "saved and returning items as json"
             format.json { render :show, status: :created, location: api_v1_list_list_items_path(@list_item) }
           else
             format.json { render json: @list_item.errors, status: :unprocessable_entity }
           end
         end
+=begin
       else
-        # i.e. update instead - BUT need to know which one to update
-        list_item_to_update = @list.list_items.find_by product_id: @list_item.product_id
-        puts list_item_to_update
-        respond_to do |format|
-          if @list_item.update(list_item_params)
-            format.json { render :show, status: :ok, location: api_v1_list_list_item_path(list_item_to_update) }
-          else
-            format.json { render json: @list_item.errors, status: :unprocessable_entity }
-          end
-        end
+        redirect_to list_path(id: params[:list_id])
       end
+=end
     else
       handle_unauthorized
     end
@@ -87,9 +82,17 @@ class Api::V1::ListItemsController < ApplicationController
     @list_item = ListItem.find(params[:id])
   end
 
-  def list_item_is_unique
-    List.exists?(@list_item.id) ? true : false
+=begin
+  def list_item_doesnt_already_exist(item)
+    if ListItem.find_by(id: item.id).exists?
+      puts "item exists"
+      false
+    else
+      puts "item doesn't exist"
+      true
+    end
   end
+=end
 
   def authorized?
     @list.user == current_user
