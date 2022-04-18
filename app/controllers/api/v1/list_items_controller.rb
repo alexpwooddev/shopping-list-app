@@ -24,10 +24,9 @@ class Api::V1::ListItemsController < ApplicationController
 
   def create
     @list_item = @list.list_items.build(list_item_params)
+    list_item_existence = check_list_item_existence(@list_item)
     if authorized?
-=begin
-      if list_item_doesnt_already_exist(@list_item)
-=end
+      if list_item_existence == false
         respond_to do |format|
           if @list_item.save
             puts "saved and returning items as json"
@@ -36,16 +35,23 @@ class Api::V1::ListItemsController < ApplicationController
             format.json { render json: @list_item.errors, status: :unprocessable_entity }
           end
         end
-=begin
       else
-        redirect_to list_path(id: params[:list_id])
+        existing_item = list_item_existence
+        new_quantity = existing_item.quantity + @list_item.quantity
+        respond_to do |format|
+          if ListItem.update(existing_item.id, :quantity => new_quantity)
+            format.json { render :show, status: :ok, location: api_v1_list_list_items_path(existing_item) }
+          else
+            format.json { render json: @list_item.errors, status: :unprocessable_entity }
+          end
+        end
       end
-=end
     else
       handle_unauthorized
     end
   end
 
+=begin
   def update
     if authorized?
       respond_to do |format|
@@ -59,6 +65,7 @@ class Api::V1::ListItemsController < ApplicationController
       handle_unauthorized
     end
   end
+=end
 
   def destroy
     if authorized?
@@ -82,17 +89,14 @@ class Api::V1::ListItemsController < ApplicationController
     @list_item = ListItem.find(params[:id])
   end
 
-=begin
-  def list_item_doesnt_already_exist(item)
-    if ListItem.find_by(id: item.id).exists?
-      puts "item exists"
-      false
+  def check_list_item_existence(item)
+    existing_list_item = ListItem.find_by(product_id: item.product_id)
+    if existing_list_item
+      existing_list_item
     else
-      puts "item doesn't exist"
-      true
+      false
     end
   end
-=end
 
   def authorized?
     @list.user == current_user
