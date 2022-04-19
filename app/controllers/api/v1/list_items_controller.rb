@@ -24,22 +24,17 @@ class Api::V1::ListItemsController < ApplicationController
 
   def create
     @list_item = @list.list_items.build(list_item_params)
-    list_item_existence = check_list_item_existence(@list_item)
     if authorized?
-      if list_item_existence == false
-        respond_to do |format|
-          if @list_item.save
-            puts "saved and returning items as json"
-            format.json { render :show, status: :created, location: api_v1_list_list_items_path(@list_item) }
-          else
-            format.json { render json: @list_item.errors, status: :unprocessable_entity }
-          end
-        end
-      else
-        existing_item = list_item_existence
-        new_quantity = existing_item.quantity + @list_item.quantity
-        respond_to do |format|
+      respond_to do |format|
+        if @list_item.save
+          puts "saved and returning items as json"
+          format.json { render :show, status: :created, location: api_v1_list_list_items_path(@list_item) }
+        else
+          puts "attempting update instead..."
+          existing_item = ListItem.find_by(product_id: @list_item.product_id)
+          new_quantity = existing_item.quantity + @list_item.quantity
           if ListItem.update(existing_item.id, :quantity => new_quantity)
+            puts "updated!"
             format.json { render :show, status: :ok, location: api_v1_list_list_items_path(existing_item) }
           else
             format.json { render json: @list_item.errors, status: :unprocessable_entity }
@@ -87,15 +82,6 @@ class Api::V1::ListItemsController < ApplicationController
 
   def set_list_item
     @list_item = ListItem.find(params[:id])
-  end
-
-  def check_list_item_existence(item)
-    existing_list_item = ListItem.find_by(product_id: item.product_id)
-    if existing_list_item
-      existing_list_item
-    else
-      false
-    end
   end
 
   def authorized?
