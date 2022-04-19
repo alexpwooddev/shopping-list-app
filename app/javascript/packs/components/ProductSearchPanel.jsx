@@ -16,7 +16,7 @@ const filterProducts = (products, query) => {
 };
 
 
-const ProductSearchPanel = ({createListItem, listId, handleErrors, clearErrors, products}) => {
+const ProductSearchPanel = ({createListItem, updateListItem, listId, handleErrors, clearErrors, products}) => {
     const {search} = window.location;
     const query = new URLSearchParams(search).get('s');
     const [searchQuery, setSearchQuery] = useState(query || '');
@@ -37,8 +37,13 @@ const ProductSearchPanel = ({createListItem, listId, handleErrors, clearErrors, 
             })
             .then(response => {
                 console.log(response);
-                const listItem = response.data;
-                createListItem(listItem);
+                if (response.status === 201) {
+                    const listItem = response.data;
+                    createListItem(listItem);
+                } else if (response.status === 200) {
+                    const updatedListItem = response.data
+                    updateListItem(updatedListItem);
+                }
                 clearErrors();
             })
             .catch(error => {

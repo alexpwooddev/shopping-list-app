@@ -16,7 +16,8 @@ const ListPanel = () => {
     const listItemsPath = `/api/v1/lists/${listId}/list_items`;
     const productsPath = `/api/v1/products`;
 
-    const notifyItemsUpdate = () => toast.success("Item/s added");
+    const notifyItemsAdded = () => toast.success("Item/s added");
+    const notifyItemUpdated = () => toast.success("Item updated");
     const notifyNoItemsMatched = () => toast.error("No valid products found in image")
 
     useEffect(() => {
@@ -60,13 +61,24 @@ const ListPanel = () => {
     const createListItem = (listItemToCreate) => {
         const newListItems = [listItemToCreate, ...listItems];
         setListItems(newListItems);
-        notifyItemsUpdate();
+        notifyItemsAdded();
     }
 
     const createListItems = (listItemsToCreate) => {
         const newListItems = [...listItemsToCreate, ...listItems];
         setListItems(newListItems);
-        notifyItemsUpdate();
+        notifyItemsAdded();
+    }
+
+    const updateListItem = (listItemToUpdate) => {
+        const newListItems = [...listItems];
+        const existingItemIndex = newListItems.findIndex(listItem => listItem.product_id === listItemToUpdate.product_id);
+        let existingItemToMutate = {...newListItems[existingItemIndex]};
+        existingItemToMutate.quantity += 1;
+        newListItems[existingItemIndex] = existingItemToMutate;
+        setListItems(newListItems);
+
+        notifyItemUpdated();
     }
 
     const toggleCompletedListItems = () => {
@@ -84,35 +96,19 @@ const ListPanel = () => {
     const toggleLoading = (loadingState) => {
         setIsLoading(loadingState);
     }
-
-    const listItemsToRender = () => {
-        const itemsCount = {};
-        const itemsAlreadyRendered = {};
-
-        listItems.forEach(item => {
-            itemsCount[item.product_id] = (itemsCount[item.product_id] || 0) + 1;
-        })
-
-        return listItems.map(item => {
-            if (itemsAlreadyRendered[item.product_id]) {
-                return;
-            }
-            else {
-                itemsAlreadyRendered[item.product_id] = true;
-                return <ListItem
+/*
+    const listItemsToRender = listItems.map(item => <ListItem
                     key={item.id}
                     listId={listId}
                     listItem={item}
-                    itemCount={itemsCount[item.product_id]}
                     products={products}
                     getListItems={getListItems}
                     hideCompletedListItems={hideCompletedListItems}
                     handleErrors={handleErrors}
                     clearErrors={clearErrors}
                 />
-            }
-        });
-    }
+        );*/
+
 
 
 
@@ -133,6 +129,7 @@ const ListPanel = () => {
                     />
                     <ProductSearchPanel
                         createListItem={createListItem}
+                        updateListItem={updateListItem}
                         listId={listId}
                         handleErrors={handleErrors}
                         clearErrors={clearErrors}
@@ -140,8 +137,21 @@ const ListPanel = () => {
                     />
                     <ListItems
                         toggleCompletedListItems={toggleCompletedListItems}
-                        hideCompletedListItems={hideCompletedListItems}>
-                        {listItemsToRender()}
+                        hideCompletedListItems={hideCompletedListItems}
+                    >
+                        {listItems.map(item =>
+                                <ListItem
+                                    key={item.id}
+                                    listId={listId}
+                                    listItem={item}
+                                    products={products}
+                                    getListItems={getListItems}
+                                    updateListItem={updateListItem}
+                                    hideCompletedListItems={hideCompletedListItems}
+                                    handleErrors={handleErrors}
+                                    clearErrors={clearErrors}
+                                />
+                        )}
                     </ListItems>
                 </>
             )}

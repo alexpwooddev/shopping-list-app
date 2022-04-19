@@ -6,7 +6,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 import setAxiosHeaders from "./AxiosHeaders";
 
-const ListItem = ({listId, listItem, itemCount, products, getListItems, hideCompletedListItems, handleErrors, clearErrors}) => {
+const ListItem = ({listId, listItem, products, getListItems, hideCompletedListItems, handleErrors, clearErrors}) => {
     const [complete, setComplete] = useState(listItem.complete);
     const completedRef = useRef();
     const path = `/api/v1/lists/${listId}/list_items/${listItem.id}`
@@ -54,7 +54,7 @@ const ListItem = ({listId, listItem, itemCount, products, getListItems, hideComp
     return (
         <tr className={`${ complete && hideCompletedListItems ? `d-none` : "" } ${complete ? "table-light" : ""}`}>
             <td className="align-middle">{listItemProduct && listItemProduct.name}</td>
-            <td className="align-middle">{itemCount}</td>
+            <td className="align-middle">{listItem.quantity}</td>
             <td className="text-right">
                 <div className="form-check form-check-inline">
                     <input
@@ -80,7 +80,6 @@ export default ListItem
 ListItem.propTypes = {
     listId: PropTypes.string.isRequired,
     listItem: PropTypes.object.isRequired,
-    itemCount: PropTypes.number.isRequired,
     products: PropTypes.array.isRequired,
     getListItems: PropTypes.func.isRequired,
     hideCompletedListItems: PropTypes.bool.isRequired,
