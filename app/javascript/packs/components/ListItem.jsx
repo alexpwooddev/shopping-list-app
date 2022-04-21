@@ -12,6 +12,7 @@ const ListItem = ({
                       products,
                       getListItems,
                       updateListItem,
+                      notifySuccess,
                       hideCompletedListItems,
                       handleErrors,
                       clearErrors
@@ -26,7 +27,6 @@ const ListItem = ({
 
     const handleCheckboxChange = () => {
         setComplete(completedRef.current.checked);
-        updateListItem();
     }
 
     const handleDestroy = () => {
@@ -36,6 +36,7 @@ const ListItem = ({
             axios
                 .delete(path)
                 .then(response => {
+                    notifySuccess("item removed");
                     getListItems();
                 })
                 .catch(error => {
@@ -46,7 +47,6 @@ const ListItem = ({
 
     const handleQuantityChange = (changeType) => {
         const newQuantity = changeType === "increment" ? quantity + 1 : quantity - 1;
-        console.log(newQuantity);
 
         if (newQuantity === 0) {
             handleDestroy();
@@ -88,8 +88,8 @@ const ListItem = ({
                         className="form-check-input"
                         id={`complete-${listItem.id}`}
                     />
-                    <i className="bi bi-plus-circle mx-1" onClick={() => handleQuantityChange("increment")}/>
-                    <i className="bi bi-dash-circle mx-1" onClick={() => handleQuantityChange("decrement")}/>
+                    <i className="bi bi-plus-circle mx-1" role="button" onClick={() => handleQuantityChange("increment")}/>
+                    <i className="bi bi-dash-circle mx-1" role="button" onClick={() => handleQuantityChange("decrement")}/>
                 </div>
                 <button onClick={handleDestroy} className="btn btn-outline-danger">Delete</button>
             </td>
@@ -105,6 +105,7 @@ ListItem.propTypes = {
     products: PropTypes.array.isRequired,
     getListItems: PropTypes.func.isRequired,
     updateListItem: PropTypes.func.isRequired,
+    notifySuccess: PropTypes.func.isRequired,
     hideCompletedListItems: PropTypes.bool.isRequired,
     handleErrors: PropTypes.func.isRequired,
     clearErrors: PropTypes.func.isRequired,

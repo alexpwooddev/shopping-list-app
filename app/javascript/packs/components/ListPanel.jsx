@@ -15,9 +15,9 @@ const ListPanel = () => {
     const listId = window.location.pathname.split('/')[2];
     const listItemsPath = `/api/v1/lists/${listId}/list_items`;
     const productsPath = `/api/v1/products`;
-
-    const notifyItemsAdded = () => toast.success("Item/s added");
-    const notifyItemUpdated = () => toast.success("Item updated");
+    const notifySuccess = (message) => {
+       return toast.success(message);
+    }
     const notifyNoItemsMatched = () => toast.error("No valid products found in image")
 
     useEffect(() => {
@@ -61,13 +61,13 @@ const ListPanel = () => {
     const createListItem = (listItemToCreate) => {
         const newListItems = [listItemToCreate, ...listItems];
         setListItems(newListItems);
-        notifyItemsAdded();
+        notifySuccess("item added");
     }
 
     const createListItems = (listItemsToCreate) => {
         const newListItems = [...listItemsToCreate, ...listItems];
         setListItems(newListItems);
-        notifyItemsAdded();
+        notifySuccess("items added");
     }
 
     const updateListItem = (listItemToUpdate) => {
@@ -76,9 +76,10 @@ const ListPanel = () => {
         let existingItemToMutate = {...newListItems[existingItemIndex]};
         existingItemToMutate.quantity += 1;
         newListItems[existingItemIndex] = existingItemToMutate;
+        console.log(JSON.parse(JSON.stringify(newListItems)))
         setListItems(newListItems);
 
-        notifyItemUpdated();
+        notifySuccess("item updated");
     }
 
     const toggleCompletedListItems = () => {
@@ -96,21 +97,6 @@ const ListPanel = () => {
     const toggleLoading = (loadingState) => {
         setIsLoading(loadingState);
     }
-/*
-    const listItemsToRender = listItems.map(item => <ListItem
-                    key={item.id}
-                    listId={listId}
-                    listItem={item}
-                    products={products}
-                    getListItems={getListItems}
-                    hideCompletedListItems={hideCompletedListItems}
-                    handleErrors={handleErrors}
-                    clearErrors={clearErrors}
-                />
-        );*/
-
-
-
 
     return (
         <>
@@ -147,6 +133,7 @@ const ListPanel = () => {
                                     products={products}
                                     getListItems={getListItems}
                                     updateListItem={updateListItem}
+                                    notifySuccess={notifySuccess}
                                     hideCompletedListItems={hideCompletedListItems}
                                     handleErrors={handleErrors}
                                     clearErrors={clearErrors}
