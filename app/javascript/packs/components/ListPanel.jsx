@@ -85,7 +85,7 @@ const ListPanel = () => {
         })
         setListItems(newListItems);
 
-        notifySuccess("items added");
+        notifySuccess(`${listItemsToCreate.length} items added`);
     }
 
     const updateListItem = (listItemToUpdate) => {
