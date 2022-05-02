@@ -18,7 +18,6 @@ const ListItem = ({
                       clearErrors
                   }) => {
     const [complete, setComplete] = useState(listItem.complete);
-    const [quantity, setQuantity] = useState(listItem.quantity)
     const completedRef = useRef();
     const path = `/api/v1/lists/${listId}/list_items/${listItem.id}`
     const listItemProduct = products.filter(product => {
@@ -46,7 +45,7 @@ const ListItem = ({
     }
 
     const handleQuantityChange = (changeType) => {
-        const newQuantity = changeType === "increment" ? quantity + 1 : quantity - 1;
+        const newQuantity = changeType === "increment" ? listItem.quantity + 1 : listItem.quantity - 1;
 
         if (newQuantity === 0) {
             handleDestroy();
@@ -62,7 +61,6 @@ const ListItem = ({
                 .then(response => {
                     console.log(response);
                     const updatedListItem = response.data;
-                    setQuantity(newQuantity);
                     updateListItem(updatedListItem);
                     clearErrors();
                 })
@@ -76,7 +74,7 @@ const ListItem = ({
     return (
         <tr className={`${complete && hideCompletedListItems ? `d-none` : ""} ${complete ? "table-light" : ""}`}>
             <td className="align-middle">{listItemProduct && listItemProduct.name}</td>
-            <td className="align-middle">{quantity}</td>
+            <td className="align-middle">{listItem.quantity}</td>
             <td className="text-right">
                 <div className="form-check form-check-inline">
                     <input

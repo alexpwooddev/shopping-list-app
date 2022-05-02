@@ -42,7 +42,7 @@ const ProductSearchPanel = ({createListItem, updateListItem, listId, handleError
                     createListItem(listItem);
                 } else if (response.status === 200) {
                     const updatedListItem = response.data
-                    updateListItem(updatedListItem);
+                    // updateListItem(updatedListItem);
                 }
                 clearErrors();
             })

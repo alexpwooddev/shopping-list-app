@@ -16,7 +16,7 @@ const ListPanel = () => {
     const listItemsPath = `/api/v1/lists/${listId}/list_items`;
     const productsPath = `/api/v1/products`;
     const notifySuccess = (message) => {
-       return toast.success(message);
+        return toast.success(message);
     }
     const notifyNoItemsMatched = () => toast.error("No valid products found in image")
 
@@ -71,13 +71,12 @@ const ListPanel = () => {
     }
 
     const updateListItem = (listItemToUpdate) => {
-        const newListItems = [...listItems];
-        const existingItemIndex = newListItems.findIndex(listItem => listItem.product_id === listItemToUpdate.product_id);
-        let existingItemToMutate = {...newListItems[existingItemIndex]};
-        existingItemToMutate.quantity += 1;
-        newListItems[existingItemIndex] = existingItemToMutate;
-        console.log(JSON.parse(JSON.stringify(newListItems)))
-        setListItems(newListItems);
+        console.log(listItemToUpdate.quantity);
+        setListItems(listItems.map(listItem => {
+            if (listItem.product_id !== listItemToUpdate.product_id) return listItem
+            return {...listItem, quantity: listItemToUpdate.quantity};
+        }));
+        console.log('updated list items via map');
 
         notifySuccess("item updated");
     }
@@ -126,18 +125,18 @@ const ListPanel = () => {
                         hideCompletedListItems={hideCompletedListItems}
                     >
                         {listItems.map(item =>
-                                <ListItem
-                                    key={item.id}
-                                    listId={listId}
-                                    listItem={item}
-                                    products={products}
-                                    getListItems={getListItems}
-                                    updateListItem={updateListItem}
-                                    notifySuccess={notifySuccess}
-                                    hideCompletedListItems={hideCompletedListItems}
-                                    handleErrors={handleErrors}
-                                    clearErrors={clearErrors}
-                                />
+                            <ListItem
+                                key={item.id}
+                                listId={listId}
+                                listItem={item}
+                                products={products}
+                                getListItems={getListItems}
+                                updateListItem={updateListItem}
+                                notifySuccess={notifySuccess}
+                                hideCompletedListItems={hideCompletedListItems}
+                                handleErrors={handleErrors}
+                                clearErrors={clearErrors}
+                            />
                         )}
                     </ListItems>
                 </>

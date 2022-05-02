@@ -33,7 +33,7 @@ class Api::V1::ListItemsController < ApplicationController
           puts "attempting update instead..."
           existing_item = ListItem.find_by(product_id: @list_item.product_id, list_id: @list_item.list_id)
           new_quantity = existing_item.quantity + @list_item.quantity
-          if ListItem.update(existing_item.id, :quantity => new_quantity)
+          if existing_item.update_attribute(:quantity, new_quantity)
             puts "updated!"
             format.json { render :show, status: :ok, location: api_v1_list_list_items_path(existing_item) }
           else
