@@ -65,18 +65,34 @@ const ListPanel = () => {
     }
 
     const createListItems = (listItemsToCreate) => {
-        const newListItems = [...listItemsToCreate, ...listItems];
+        const updatedItems = [];
+        // update existing items
+        const newListItems = listItems.map(listItem => {
+            const found = listItemsToCreate.find(itemToCreate => itemToCreate.product_id === listItem.product_id);
+            if (found) {
+                updatedItems.push(listItem);
+                listItem = Object.assign(listItem, found);
+            }
+            return listItem;
+        });
+
+        // create any new items
+        listItemsToCreate.forEach(itemToCreate => {
+            const found = updatedItems.find(updatedItem => updatedItem.product_id === itemToCreate.product_id);
+            if (!found) {
+                newListItems.push(itemToCreate);
+            }
+        })
         setListItems(newListItems);
+
         notifySuccess("items added");
     }
 
     const updateListItem = (listItemToUpdate) => {
-        console.log(listItemToUpdate.quantity);
         setListItems(listItems.map(listItem => {
             if (listItem.product_id !== listItemToUpdate.product_id) return listItem
             return {...listItem, quantity: listItemToUpdate.quantity};
         }));
-        console.log('updated list items via map');
 
         notifySuccess("item updated");
     }

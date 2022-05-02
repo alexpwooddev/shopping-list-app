@@ -34,7 +34,8 @@ class Api::V1::ListItemsController < ApplicationController
           existing_item = ListItem.find_by(product_id: @list_item.product_id, list_id: @list_item.list_id)
           new_quantity = existing_item.quantity + @list_item.quantity
           if existing_item.update_attribute(:quantity, new_quantity)
-            puts "updated!"
+            puts "updated from create action!"
+            @list_item = existing_item
             format.json { render :show, status: :ok, location: api_v1_list_list_items_path(existing_item) }
           else
             format.json { render json: @list_item.errors, status: :unprocessable_entity }
@@ -48,11 +49,9 @@ class Api::V1::ListItemsController < ApplicationController
 
   def update
     if authorized?
-      puts @list_item.quantity
-      puts params
       respond_to do |format|
-        if @list_item.update(:quantity => params[:list_item][:quantity])
-          puts "updated!"
+        if @list_item.update_attribute(:quantity, params[:list_item][:quantity])
+          puts "updated from update action!"
           format.json { render :show, status: :ok, location: api_v1_list_list_items_path(@list_item) }
         else
           format.json { render json: @list_item.errors, status: :unprocessable_entity }
