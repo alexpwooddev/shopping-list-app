@@ -1,6 +1,8 @@
 import React, {useState, useRef} from 'react'
 import PropTypes from 'prop-types'
 import axios from "axios";
+import {QRCodeSVG} from 'qrcode.react';
+import Modal from 'react-modal';
 import _ from "lodash";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
@@ -18,11 +20,20 @@ const ListItem = ({
                       clearErrors
                   }) => {
     const [complete, setComplete] = useState(listItem.complete);
+    const [modalIsOpen, setIsOpen] = useState(false);
     const completedRef = useRef();
     const path = `/api/v1/lists/${listId}/list_items/${listItem.id}`
     const listItemProduct = products.filter(product => {
         return product.id === listItem.product_id;
     })?.[0];
+
+    const openModal = () => {
+        setIsOpen(true);
+    }
+
+    const closeModal = () => {
+        setIsOpen(false);
+    }
 
     const handleCheckboxChange = () => {
         setComplete(completedRef.current.checked);
@@ -72,26 +83,35 @@ const ListItem = ({
     }
 
     return (
-        <tr className={`${complete && hideCompletedListItems ? `d-none` : ""} ${complete ? "table-light" : ""}`}>
-            <td className="align-middle">{listItemProduct && listItemProduct.name}</td>
-            <td className="align-middle">{listItem.quantity}</td>
-            <td className="text-right">
-                <div className="form-check form-check-inline">
-                    <input
-                        type="boolean"
-                        defaultChecked={complete}
-                        type="checkbox"
-                        onChange={handleCheckboxChange}
-                        ref={completedRef}
-                        className="form-check-input"
-                        id={`complete-${listItem.id}`}
-                    />
-                    <i className="bi bi-plus-circle mx-1" role="button" onClick={() => handleQuantityChange("increment")}/>
-                    <i className="bi bi-dash-circle mx-1" role="button" onClick={() => handleQuantityChange("decrement")}/>
-                </div>
-                <button onClick={handleDestroy} className="btn btn-outline-danger">Delete</button>
-            </td>
-        </tr>
+        <>
+            <tr className={`${complete && hideCompletedListItems ? `d-none` : ""} ${complete ? "table-light" : ""}`}>
+                <td className="align-middle">{listItemProduct && listItemProduct.name}</td>
+                <td className="align-middle">{listItem.quantity}</td>
+                <td className="text-right">
+                    <div className="form-check form-check-inline">
+                        <input
+                            type="boolean"
+                            defaultChecked={complete}
+                            type="checkbox"
+                            onChange={handleCheckboxChange}
+                            ref={completedRef}
+                            className="form-check-input"
+                            id={`complete-${listItem.id}`}
+                        />
+                        <i className="bi bi-plus-circle mx-1" role="button" onClick={() => handleQuantityChange("increment")}/>
+                        <i className="bi bi-dash-circle mx-1" role="button" onClick={() => handleQuantityChange("decrement")}/>
+                    </div>
+                    <button onClick={openModal} className="btn btn-outline-primary mx-1">Create QR Code</button>
+                    <button onClick={handleDestroy} className="btn btn-outline-danger mx-1">Delete</button>
+                </td>
+            </tr>
+            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="QR Code Modal">
+                <QRCodeSVG />
+                <button className="btn btn-outline-primary mx-1">print</button>
+                <button onClick={closeModal} className="btn btn-outline-secondary mx-1">close</button>
+            </Modal>
+        </>
+
     )
 }
 
