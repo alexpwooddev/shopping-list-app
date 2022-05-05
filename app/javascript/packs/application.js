@@ -12,7 +12,10 @@ Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
 
-require("./components/ListsPanel")
-require("./components/ListPanel")
 require('bootstrap')
 import 'bootstrap/dist/css/bootstrap'
+
+// Support component names relative to this directory:
+var componentRequireContext = require.context("components", true);
+var ReactRailsUJS = require("react_ujs");
+ReactRailsUJS.useContext(componentRequireContext);

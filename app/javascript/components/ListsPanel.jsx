@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
 
 import { Lists, ListPreview, ListForm, Spinner, ErrorMessage } from './'
@@ -78,10 +77,5 @@ const ListsPanel = () => {
         </>
     );
 }
-
+//
 export default ListsPanel;
-
-document.addEventListener('turbolinks:load', () => {
-    const app = document.getElementById('lists-panel');
-    app && ReactDOM.render(<ListsPanel/>, app);
-})

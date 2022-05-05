@@ -18,7 +18,7 @@ const SearchBar = ({searchQuery, setSearchQuery, toggleSearchFocus}) => {
                 onSubmit={onSubmit}
             >
                 <label htmlFor="product-search">
-                    Or search Products and click to add them:
+                    Search for products and click to add them:
                 </label>
                 <input
                     value={searchQuery}

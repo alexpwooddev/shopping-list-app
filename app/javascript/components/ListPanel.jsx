@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -169,8 +168,3 @@ const ListPanel = () => {
 }
 
 export default ListPanel;
-
-document.addEventListener('turbolinks:load', () => {
-    const app = document.getElementById('list-panel');
-    app && ReactDOM.render(<ListPanel/>, app);
-})
