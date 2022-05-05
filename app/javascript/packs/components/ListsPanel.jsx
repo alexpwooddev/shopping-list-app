@@ -78,7 +78,7 @@ const ListsPanel = () => {
         </>
     );
 }
-
+//
 export default ListsPanel;
 
 document.addEventListener('turbolinks:load', () => {

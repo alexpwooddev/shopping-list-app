@@ -78,7 +78,7 @@ const ImageUpload = ({createListItems, listId, handleErrors, clearErrors, produc
 
     return (
         <div>
-            <label>Add items to your list from an image:</label>
+            <label>Add items from an image:</label>
             <input type="file" className="form-control" onChange={(e) => setImage(e.target.files[0])}/>
             {image && <button className="btn btn-outline-primary my-2" onClick={processImage}>Add items from
                 image</button>}
