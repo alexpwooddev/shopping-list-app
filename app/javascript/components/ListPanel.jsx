@@ -10,6 +10,7 @@ const ListPanel = () => {
     const [products, setProducts] = useState([]);
     const [hideCompletedListItems, setHideCompletedListItems] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isValidList, setIsValidList] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
     const listId = window.location.pathname.split('/')[2];
     const listItemsPath = `/api/v1/lists/${listId}/list_items`;
@@ -52,8 +53,8 @@ const ListPanel = () => {
             })
             .catch(error => {
                 console.log(error);
-                setIsLoading(true);
-                setErrorMessage({message: "There was an error loading your list..."});
+                setIsValidList(false);
+                setErrorMessage({message: "There was an error loading that list or it doesn't exist"});
             });
     }
 
@@ -117,7 +118,7 @@ const ListPanel = () => {
             {errorMessage && (
                 <ErrorMessage errorMessage={errorMessage}/>
             )}
-            {!isLoading && (
+            {!isLoading && isValidList && (
                 <>
                     <ImageUpload
                         createListItems={createListItems}

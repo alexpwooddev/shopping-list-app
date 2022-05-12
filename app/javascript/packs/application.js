@@ -13,6 +13,7 @@ Turbolinks.start()
 ActiveStorage.start()
 
 require('bootstrap')
+//= require bootstrap-sprockets
 import 'bootstrap/dist/css/bootstrap'
 
 // Support component names relative to this directory:
