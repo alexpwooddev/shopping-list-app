@@ -12,9 +12,7 @@ Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
 
-require('bootstrap')
-//= require bootstrap-sprockets
-import 'bootstrap/dist/css/bootstrap'
+import 'bootstrap'
 
 // Support component names relative to this directory:
 var componentRequireContext = require.context("components", true);

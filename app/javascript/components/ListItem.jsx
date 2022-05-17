@@ -1,12 +1,10 @@
 import React, {useState, useRef} from 'react'
 import PropTypes from 'prop-types'
 import axios from "axios";
-import {QRCodeSVG} from 'qrcode.react';
-import Modal from 'react-modal';
-import _ from "lodash";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 import setAxiosHeaders from "./AxiosHeaders";
+import { QrModal } from "./";
 
 const ListItem = ({
                       listId,
@@ -26,6 +24,10 @@ const ListItem = ({
     const listItemProduct = products.filter(product => {
         return product.id === listItem.product_id;
     })?.[0];
+    const qrJson = JSON.stringify({
+        product_id: listItem.product_id,
+        quantity: listItem.quantity,
+    });
 
     const openModal = () => {
         setIsOpen(true);
@@ -98,18 +100,20 @@ const ListItem = ({
                             className="form-check-input"
                             id={`complete-${listItem.id}`}
                         />
-                        <i className="bi bi-plus-circle mx-1" role="button" onClick={() => handleQuantityChange("increment")}/>
-                        <i className="bi bi-dash-circle mx-1" role="button" onClick={() => handleQuantityChange("decrement")}/>
+                        <i className="bi bi-plus-circle mx-1" role="button"
+                           onClick={() => handleQuantityChange("increment")}/>
+                        <i className="bi bi-dash-circle mx-1" role="button"
+                           onClick={() => handleQuantityChange("decrement")}/>
                     </div>
                     <button onClick={openModal} className="btn btn-outline-primary mx-1">Create QR Code</button>
                     <button onClick={handleDestroy} className="btn btn-outline-danger mx-1">Delete</button>
                 </td>
             </tr>
-            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="QR Code Modal">
-                <QRCodeSVG />
-                <button className="btn btn-outline-primary mx-1">print</button>
-                <button onClick={closeModal} className="btn btn-outline-secondary mx-1">close</button>
-            </Modal>
+            <QrModal
+                modalIsOpen={modalIsOpen}
+                closeModal={closeModal}
+                qrJson={qrJson}
+            />
         </>
 
     )
