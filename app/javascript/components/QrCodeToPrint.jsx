@@ -1,9 +1,12 @@
 import {QRCodeSVG} from "qrcode.react";
 import React from "react";
 
-
-export const QrCodeToPrint = React.forwardRef((props, ref) => {
+const QrCodeToPrint = React.forwardRef(({qrJson}, ref) => {
     return (
-        <QRCodeSVG ref={ref} value={qrJson} includeMargin={true} />
+        <div ref={ref}>
+            <QRCodeSVG value={qrJson} includeMargin={true} size={256} />
+        </div>
     );
 });
+
+export default QrCodeToPrint;

@@ -10,3 +10,4 @@ export { default as setAxiosHeaders } from "./AxiosHeaders"
 export { default as SearchBar } from "./SearchBar"
 export { default as ImageUpload } from "./ImageUpload"
 export { default as QrModal } from "./QrModal";
+export { default as QrCodeToPrint } from "./QrCodeToPrint"

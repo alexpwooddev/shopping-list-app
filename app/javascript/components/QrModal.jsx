@@ -1,17 +1,34 @@
-import React, {useState} from 'react';
+import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
-import {QRCodeSVG} from 'qrcode.react';
 import Modal from 'react-modal';
+import {useReactToPrint} from "react-to-print";
+import {QrCodeToPrint} from "./";
 
-Modal.setAppElement('#list-panel-root');
+const customStyles = {
+    content: {
+        width: '50%',
+        height: '50%',
+        top: '25%',
+        left: '25%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+};
 
-const QrModal = ({modalIsOpen, closeModal , qrJson}) => {
-    console.log(qrJson);
+Modal.setAppElement('#root');
+
+const QrModal = ({modalIsOpen, closeModal, qrJson}) => {
+    const qrToPrintRef = useRef();
+    const handlePrint = useReactToPrint({
+        content: () => qrToPrintRef.current,
+    });
+
     return (
         <>
-            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="QR Code Modal">
-                <QRCodeSVG value={qrJson} includeMargin={true} />
-                <button className="btn btn-outline-primary mx-1">print</button>
+            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="QR Code Modal" style={customStyles}>
+                <QrCodeToPrint qrJson={qrJson} ref={qrToPrintRef}/>
+                <button onClick={handlePrint} className="btn btn-outline-primary mx-1">print</button>
                 <button onClick={closeModal} className="btn btn-outline-secondary mx-1">close</button>
             </Modal>
         </>
