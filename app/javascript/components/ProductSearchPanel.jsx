@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
-import PropTypes from 'prop-types'
-import axios from 'axios'
+import React, {useState} from 'react';
+import PropTypes from 'prop-types';
+import { doAxiosPost } from '../utils/doAxiosPost';
 
 import {SearchBar, setAxiosHeaders} from './';
 
@@ -22,33 +22,14 @@ const ProductSearchPanel = ({createListItem, updateListItem, listId, handleError
     const [searchQuery, setSearchQuery] = useState(query || '');
     const [searchFocused, setSearchFocused] = useState(false);
     const filteredProducts = filterProducts(products, searchQuery);
+    const path = `/api/v1/lists/${listId}/list_items`
 
     const toggleSearchFocus = () => setSearchFocused(!searchFocused);
 
     const handleProductClick = (e, productId) => {
         e.preventDefault();
         setAxiosHeaders();
-        axios
-            .post(`/api/v1/lists/${listId}/list_items`, {
-                list_item: {
-                    product_id: productId,
-                    quantity: 1,
-                },
-            })
-            .then(response => {
-                console.log(response);
-                if (response.status === 201) {
-                    const listItem = response.data;
-                    createListItem(listItem);
-                } else if (response.status === 200) {
-                    const updatedListItem = response.data
-                    updateListItem(updatedListItem);
-                }
-                clearErrors();
-            })
-            .catch(error => {
-                handleErrors(error);
-            })
+        doAxiosPost(path, productId, createListItem, updateListItem, clearErrors, handleErrors);
         setSearchQuery('');
     }
 

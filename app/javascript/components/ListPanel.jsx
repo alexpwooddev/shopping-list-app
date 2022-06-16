@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import {doAxiosGetListItems, doAxiosGetProducts} from '../utils/doAxiosGet';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -27,35 +27,11 @@ const ListPanel = () => {
 
     //TO DO  - refine this so I don't need to request ALL products from the API
     const getProducts = () => {
-        axios.get(productsPath)
-            .then(response => {
-                clearErrors();
-                setIsLoading(true);
-                const retrievedProducts = response.data;
-                setProducts(retrievedProducts);
-                setIsLoading(false);
-            })
-            .catch(error => {
-                console.log(error);
-                setIsLoading(true);
-                setErrorMessage({message: "There was an error loading your list..."})
-            });
+        doAxiosGetProducts(productsPath, clearErrors, setIsLoading, setProducts, setErrorMessage)
     }
 
     const getListItems = () => {
-        axios.get(listItemsPath)
-            .then(response => {
-                clearErrors();
-                setIsLoading(true);
-                const retrievedListItems = response.data;
-                setListItems(retrievedListItems);
-                setIsLoading(false);
-            })
-            .catch(error => {
-                console.log(error);
-                setIsValidList(false);
-                setErrorMessage({message: "There was an error loading that list or it doesn't exist"});
-            });
+        doAxiosGetListItems(listItemsPath, clearErrors, setIsLoading, setListItems, setIsValidList, setErrorMessage)
     }
 
     const createListItem = (listItemToCreate) => {
