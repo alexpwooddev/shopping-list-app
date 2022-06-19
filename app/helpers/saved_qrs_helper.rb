@@ -1,0 +1,2 @@
+module SavedQrsHelper
+end
