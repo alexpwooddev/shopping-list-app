@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  get 'saved_qrs/show'
-  get 'saved_qrs/edit'
-  get 'saved_qrs/destroy'
   devise_for :users
   authenticated :user do
     root "pages#my_lists", as: :authenticated_root
@@ -16,4 +13,7 @@ Rails.application.routes.draw do
       end
     end
   end
+  get 'saved_qrs/show'
+  get 'saved_qrs/edit'
+  get 'saved_qrs/destroy'
 end
