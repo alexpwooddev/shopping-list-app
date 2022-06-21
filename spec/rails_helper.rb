@@ -42,6 +42,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Warden::Test::Helpers, type: :feature
 
   # RSpec Rails can automatically mix in different behaviours to your tests
@@ -63,4 +64,5 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  config.after(type: :feature) { Warden.test_reset! }
 end
