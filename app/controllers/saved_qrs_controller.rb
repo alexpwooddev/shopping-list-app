@@ -1,6 +1,6 @@
 class SavedQrsController < ApplicationController
-  def show
-    # shows all savedQrs for current user
+  def index
+    # returns all savedQrs for current user
     @user_saved_Qrs = current_user.saved_qrs
     @user_saved_Qrs.each do |qr|
       # product name
@@ -11,7 +11,15 @@ class SavedQrsController < ApplicationController
     end
   end
 
+  def show
+    # returns a savedQr for current user
+
+  end
+
   def edit
+  end
+
+  def update
   end
 
   def destroy
