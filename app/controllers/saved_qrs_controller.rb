@@ -1,19 +1,17 @@
 class SavedQrsController < ApplicationController
   def index
-    # returns all savedQrs for current user
-    @user_saved_Qrs = current_user.saved_qrs
-    @user_saved_Qrs.each do |qr|
-      # product name
-      product = Product.find_by(id: qr.product_id);
-      puts product.name
-      puts "prod_id: #{qr.product_id}"
-      puts "quantity: #{qr.quantity}"
-    end
+    @user_saved_qrs = current_user.saved_qrs
   end
 
   def show
-    # returns a savedQr for current user
-
+    saved_qr_id = params[:id]
+    @saved_qr = SavedQr.find_by(id: saved_qr_id)
+    if @saved_qr
+      @saved_qr
+    else
+      # TO DO - add user notification of redirect
+      redirect_to(saved_qrs_path)
+    end
   end
 
   def edit

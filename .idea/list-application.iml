@@ -86,6 +86,7 @@
     <orderEntry type="library" scope="PROVIDED" name="rack-proxy (v0.7.2, RVM: ruby-2.6.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rack-test (v1.1.0, RVM: ruby-2.6.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rails (v6.1.5, RVM: ruby-2.6.3) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rails-controller-testing (v1.0.5, RVM: ruby-2.6.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rails-dom-testing (v2.0.3, RVM: ruby-2.6.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rails-html-sanitizer (v1.4.2, RVM: ruby-2.6.3) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="railties (v6.1.5, RVM: ruby-2.6.3) [gem]" level="application" />
@@ -447,7 +448,10 @@
             <subtasks>
               <RakeTaskImpl description="Run the code examples in spec/controllers" fullCommand="spec:controllers" id="controllers" />
               <RakeTaskImpl description="Run the code examples in spec/features" fullCommand="spec:features" id="features" />
+              <RakeTaskImpl description="Run the code examples in spec/helpers" fullCommand="spec:helpers" id="helpers" />
               <RakeTaskImpl description="Run the code examples in spec/models" fullCommand="spec:models" id="models" />
+              <RakeTaskImpl description="Run the code examples in spec/requests" fullCommand="spec:requests" id="requests" />
+              <RakeTaskImpl description="Run the code examples in spec/views" fullCommand="spec:views" id="views" />
               <RakeTaskImpl description="" fullCommand="spec:prepare" id="prepare" />
               <RakeTaskImpl description="" fullCommand="spec:statsetup" id="statsetup" />
             </subtasks>
