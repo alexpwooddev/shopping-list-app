@@ -43,5 +43,15 @@ FactoryBot.define do
       end
     end
 
+    factory :user_with_saved_qrs do
+      transient do
+        saved_qrs_count { 5 }
+      end
+
+      after(:create) do |user, evaluator|
+        create_list(:saved_qr, evaluator.saved_qrs_count, user: user)
+      end
+    end
+
   end
 end

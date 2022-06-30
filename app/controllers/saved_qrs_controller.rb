@@ -6,15 +6,14 @@ class SavedQrsController < ApplicationController
   def show
     saved_qr_id = params[:id]
     @saved_qr = SavedQr.find_by(id: saved_qr_id)
-    if @saved_qr
-      @saved_qr
-    else
-      # TO DO - add user notification of redirect
-      redirect_to(saved_qrs_path)
-    end
+    @saved_qr ? @saved_qr : redirect_to(saved_qrs_path)
+    # TO DO - add user notification of redirect
   end
 
   def edit
+    saved_qr_id = params[:id]
+    @saved_qr = SavedQr.find_by(id: saved_qr_id)
+    @saved_qr ? @saved_qr : redirect_to(saved_qrs_path)
   end
 
   def update
