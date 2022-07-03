@@ -95,15 +95,19 @@ RSpec.describe "SavedQrs", type: :request do
         saved_qr = user_with_saved_qrs.saved_qrs.first
         new_quantity = saved_qr.quantity + 1
         patch "/saved_qrs/#{saved_qr.id.to_s}", params: { quantity: new_quantity }
-        expect(response).to have_http_status(:success)
+        puts response.status
+        expect(response).to have_http_status(200)
+        # expect(JSON.parse(response.body)["quantity"]).to eq(new_quantity)
+
       end
+
       it "doesn't allow updates of another user's saved_qr" do
         sign_in(user_with_saved_qrs, :scope => :user)
         another_user_saved_qr = another_user_with_saved_qrs.saved_qrs.first
         new_quantity = another_user_saved_qr.quantity + 1
         patch "/saved_qrs/#{another_user_saved_qr.id.to_s}", params: { quantity: new_quantity }
-        # Getting 204 instead of 403 (i.e. no content - controller update needed?)
-        expect(response).to have_http_status(403)
+        # Getting 204 instead of 401 (i.e. no content - controller update needed?)
+        expect(response).to have_http_status(401)
       end
     end
   end
