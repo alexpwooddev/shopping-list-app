@@ -8,8 +8,16 @@ class SavedQrsController < ApplicationController
   end
 
   def show
-    @saved_qr ? @saved_qr : redirect_to(saved_qrs_path)
-    # TO DO - add user notification of redirect
+    if authorized?
+      if @saved_qr
+        @saved_qr
+      else
+        redirect_to(saved_qrs_path)
+        flash[:alert] = "no such QR exists"
+      end
+    else
+      handle_unauthorized
+    end
   end
 
   def edit
@@ -17,8 +25,6 @@ class SavedQrsController < ApplicationController
   end
 
   def update
-    # should Devise and my routing be handling auth before anything even gets here?
-    # i.e. i'm just handling success/failure based on request payload?
     if authorized?
       @saved_qr.update_attribute(:quantity, params[:quantity])
       flash[:success] = "QR updated successfully"
@@ -34,10 +40,16 @@ class SavedQrsController < ApplicationController
   private
 
   def set_saved_qr
-    @saved_qr = SavedQr.find(params[:id])
+    @saved_qr = SavedQr.find_by(id: params[:id])
   end
 
-  def authorized
-    @saved_qr.user == current_user
+  def authorized?
+    @saved_qr&.user == current_user
+  end
+
+  def handle_unauthorized
+    unless authorized?
+      render :file => "public/401.html", :status => :unauthorized
+    end
   end
 end

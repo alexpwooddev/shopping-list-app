@@ -24,8 +24,8 @@ RSpec.describe "SavedQrs", type: :request do
   end
 
   describe "GET /show" do
-    let!(:user) { FactoryBot.create(:user) }
-    let!(:saved_qr) { FactoryBot.create(:saved_qr) }
+    let!(:user) { FactoryBot.create(:user_with_saved_qrs) }
+    let!(:another_user_with_saved_qrs) { FactoryBot.create(:user_with_saved_qrs) }
 
     context "when not authenticated" do
       it "redirects to users/sign_in" do
@@ -36,9 +36,10 @@ RSpec.describe "SavedQrs", type: :request do
     end
 
     context "when authenticated" do
-      it "returns the show page and its saved_qr item" do
+      it "returns the show page and a user's saved_qr" do
         sign_in(user, :scope => :user)
-        get "/saved_qrs/#{saved_qr.id.to_s}"
+        user_saved_qr = user.saved_qrs.first
+        get "/saved_qrs/#{user_saved_qr.id.to_s}"
         expect(response).to have_http_status(:success)
         expect(response).to render_template(:show)
         expect(response.body).to include("<p>")
@@ -46,9 +47,20 @@ RSpec.describe "SavedQrs", type: :request do
 
       it "redirects to saved_qrs if saved_qr doesn't exist for this user" do
         sign_in(user, :scope => :user)
-        get"/saved_qrs/#{(saved_qr.id + 1000).to_s}"
+        user_saved_qr = user.saved_qrs.first
+        get"/saved_qrs/#{(user_saved_qr.id + 1000).to_s}"
+        # might need to consolidate this and the test below!!!!!!!
+        # HERE
         expect(response).to have_http_status(:redirect)
         expect(response).to redirect_to(saved_qrs_path)
+      end
+
+      it "doesn't allow a user to view another user's saved_qr" do
+        sign_in(user, :scope => :user)
+        another_user_saved_qr = another_user_with_saved_qrs.saved_qrs.first
+        get "/saved_qrs/#{another_user_saved_qr.id.to_s}"
+        expect(response).to have_http_status(401)
+        expect(response).to redirect_to("public/401.html")
       end
     end
   end
@@ -106,8 +118,8 @@ RSpec.describe "SavedQrs", type: :request do
         another_user_saved_qr = another_user_with_saved_qrs.saved_qrs.first
         new_quantity = another_user_saved_qr.quantity + 1
         patch "/saved_qrs/#{another_user_saved_qr.id.to_s}", params: { quantity: new_quantity }
-        # Getting 204 instead of 401 (i.e. no content - controller update needed?)
         expect(response).to have_http_status(401)
+        expect(response).to redirect_to("public/401.html")
       end
     end
   end
