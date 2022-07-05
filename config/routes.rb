@@ -14,4 +14,8 @@ Rails.application.routes.draw do
     end
   end
   resources :saved_qrs, only: [:index, :show, :edit, :update, :destroy]
+
+  get '/404', to: 'errors#not_found'
+  get '/500', to: 'errors#internal_server'
+  get '/422', to: 'errors#unprocessable'
 end

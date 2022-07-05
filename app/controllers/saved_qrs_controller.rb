@@ -1,6 +1,4 @@
 class SavedQrsController < ApplicationController
-  # not sure I actually need this here at all? don't my routes set this up?
-  # before_action :authenticate_user!
   before_action :set_saved_qr
 
   def index
@@ -8,16 +6,15 @@ class SavedQrsController < ApplicationController
   end
 
   def show
-    if authorized?
-      if @saved_qr
-        @saved_qr
-      else
-        redirect_to(saved_qrs_path)
-        flash[:alert] = "no such QR exists"
-      end
-    else
+    unless @saved_qr
+      not_found
+    end
+
+    unless authorized?
       handle_unauthorized
     end
+
+    @saved_qr
   end
 
   def edit
@@ -25,17 +22,18 @@ class SavedQrsController < ApplicationController
   end
 
   def update
-    if authorized?
-      @saved_qr.update_attribute(:quantity, params[:quantity])
-      flash[:success] = "QR updated successfully"
-      redirect_to index
-    else
+    unless authorized?
       handle_unauthorized
     end
+
+    @saved_qr.update_attribute(:quantity, params[:quantity])
+    flash[:success] = "QR updated successfully"
+    redirect_to index
   end
 
   def destroy
   end
+
 
   private
 
@@ -44,12 +42,15 @@ class SavedQrsController < ApplicationController
   end
 
   def authorized?
-    @saved_qr&.user == current_user
+    @saved_qr.user == current_user
   end
 
   def handle_unauthorized
-    unless authorized?
-      render :file => "public/401.html", :status => :unauthorized
-    end
+    puts "not authorized!"
+    render_401
+  end
+
+  def render_401
+    render :template => "errors/unauthorized", :status => :unauthorized
   end
 end
