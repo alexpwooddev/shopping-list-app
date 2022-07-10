@@ -1,18 +1,13 @@
 class SavedQrsController < ApplicationController
   before_action :set_saved_qr
+  before_action :correct_user, only: [:show, :edit, :update, :destroy]
 
   def index
     @user_saved_qrs = current_user.saved_qrs
   end
 
   def show
-    unless @saved_qr
-      not_found
-    end
-
-    unless authorized?
-      handle_unauthorized
-    end
+    return not_found unless @saved_qr
 
     @saved_qr
   end
@@ -22,13 +17,9 @@ class SavedQrsController < ApplicationController
   end
 
   def update
-    unless authorized?
-      handle_unauthorized
-    end
-
     @saved_qr.update_attribute(:quantity, params[:quantity])
     flash[:success] = "QR updated successfully"
-    redirect_to index
+    redirect_to saved_qrs_path
   end
 
   def destroy
@@ -42,15 +33,14 @@ class SavedQrsController < ApplicationController
   end
 
   def authorized?
-    @saved_qr.user == current_user
+    @saved_qr? @saved_qr.user == current_user : false
   end
 
-  def handle_unauthorized
-    puts "not authorized!"
-    render_401
+  def correct_user
+    return true if authorized?
+
+    flash[:warning] = "You can't access that page or it doesn't exist"
+    redirect_to saved_qrs_path
   end
 
-  def render_401
-    render :template => "errors/unauthorized", :status => :unauthorized
-  end
 end
