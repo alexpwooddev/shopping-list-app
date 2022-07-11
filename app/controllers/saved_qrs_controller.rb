@@ -23,6 +23,9 @@ class SavedQrsController < ApplicationController
   end
 
   def destroy
+    @saved_qr.destroy
+    flash[:success] = "QR deleted"
+    redirect_to saved_qrs_path
   end
 
 

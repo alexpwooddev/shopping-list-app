@@ -1,11 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe "SavedQrs", type: :request do
+
   describe "GET /index" do
-    let!(:user) { FactoryBot.create(:user) }
+    let!(:user) { FactoryBot.create(:user_with_saved_qrs) }
 
     context "when not authenticated" do
-      it "returns http redirect and redirects to users/sign_in" do
+      it "redirects to users/sign_in" do
         get "/saved_qrs"
         expect(response).to have_http_status(:redirect)
         expect(response).to redirect_to(new_user_session_path)
@@ -53,12 +54,12 @@ RSpec.describe "SavedQrs", type: :request do
         assert_redirected_to saved_qrs_path
       end
 
-      it "returns 401 if a user tries to view another user's saved_qr" do
+      it "redirects to index if a user tries to view another user's saved_qr" do
         sign_in(user, :scope => :user)
         another_user_saved_qr = another_user_with_saved_qrs.saved_qrs.first
         get "/saved_qrs/#{another_user_saved_qr.id.to_s}"
         expect(response).to have_http_status(:redirect)
-        assert_redirected_to saved_qrs_path
+        expect(response).to redirect_to saved_qrs_path
       end
     end
   end
@@ -109,7 +110,8 @@ RSpec.describe "SavedQrs", type: :request do
         patch "/saved_qrs/#{saved_qr.id.to_s}", params: { quantity: new_quantity }
         saved_qr.reload
         expect(saved_qr.quantity).to eq(new_quantity)
-        expect(response).to have_http_status(302)
+        expect(response).to have_http_status(:redirect)
+        expect(response).to redirect_to(saved_qrs_path)
       end
 
       it "doesn't allow updates of another user's saved_qr" do
@@ -119,26 +121,46 @@ RSpec.describe "SavedQrs", type: :request do
         patch "/saved_qrs/#{another_user_saved_qr.id.to_s}", params: { quantity: new_quantity }
         another_user_saved_qr.reload
         expect(another_user_saved_qr.quantity).not_to eq(new_quantity)
-        expect(response).to have_http_status(302)
+        expect(response).to have_http_status(:redirect)
+        expect(response).to redirect_to(saved_qrs_path)
       end
     end
   end
 
-  # describe "GET /destroy" do
-  #   let!(:user) { FactoryBot.create(:user) }
-  #   context "when not authenticated" do
-  #     it "returns http redirect" do
-  #       get "/saved_qrs/destroy"
-  #       expect(response).to have_http_status(:redirect)
-  #     end
-  #   end
-  #   context "when authenticated" do
-  #     it "returns http success" do
-  #       sign_in(user, :scope => :user)
-  #       get "/saved_qrs/destroy"
-  #       expect(response).to have_http_status(:success)
-  #     end
-  #   end
-  # end
+  describe "DELETE /destroy" do
+    let!(:user) { FactoryBot.create(:user_with_saved_qrs) }
+    let!(:another_user_with_saved_qrs) { FactoryBot.create(:user_with_saved_qrs) }
+
+    context "when not authenticated" do
+      it "redirects to index" do
+        saved_qr = user.saved_qrs.first
+        delete "/saved_qrs/#{saved_qr.id.to_s}"
+        expect(response).to have_http_status(:redirect)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when authenticated" do
+      it "deletes the user's saved_qr" do
+        sign_in(user, :scope => :user)
+        saved_qr = user.saved_qrs.first
+        assert_difference "SavedQr.count", -1 do
+          delete "/saved_qrs/#{saved_qr.id.to_s}"
+        end
+        expect(response).to have_http_status(:redirect)
+        expect(response).to redirect_to(saved_qrs_path)
+      end
+
+      it "doesn't allow deletion of another user's saved_qr" do
+        sign_in(user, :scope => :user)
+        another_users_saved_qr = another_user_with_saved_qrs.saved_qrs.first
+        assert_no_difference "SavedQr.count" do
+          delete "/saved_qrs/#{another_users_saved_qr.id.to_s}"
+        end
+        expect(response).to have_http_status(:redirect)
+        expect(response).to redirect_to(saved_qrs_path)
+      end
+    end
+  end
 
 end
