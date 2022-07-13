@@ -4,6 +4,8 @@ class StatsController < ApplicationController
   def index
     @top_products_by_quantity = top_n_products_by_quantity(3)
     @top_products_by_list_occurrence = top_n_products_by_list_occurrence(3)
+
+    # cheese_data = get_product_health_data("cheese")
   end
 
 
