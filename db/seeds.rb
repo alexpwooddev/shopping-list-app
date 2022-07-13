@@ -17,8 +17,10 @@ User.all.each do |u|
 end
 
 List.all.each do |l|
-  5.times do |i|
-    l.list_items.create(product_id: i+1, quantity: 1)
-  end
+  l.list_items.create(product_id: 1, quantity: 1)
+  l.list_items.create(product_id: 2, quantity: 6)
+  l.list_items.create(product_id: 3, quantity: 2)
+  l.list_items.create(product_id: 4, quantity: 8)
+  l.list_items.create(product_id: 5, quantity: 1)
 end
 
