@@ -14,11 +14,12 @@ RSpec.describe "Stats", type: :request do
     end
 
     context "when authenticated" do
-      it "returns http success" do
+      it "returns the index page with at least one item" do
         sign_in(user, :scope => :user)
         get "/stats"
         expect(response).to have_http_status(:success)
         expect(response).to render_template(:index)
+        expect(response.body).to include("<li")
       end
     end
 

@@ -2,13 +2,13 @@ require 'pry'
 
 class StatsController < ApplicationController
   def index
-    top_n_products(3)
+    @top_products = top_n_products(3)
   end
 
 
   private
 
-  # get a user's top n products by number of occurrences as a list_item
+  # a user's top n products by number of occurrences as a list_item
   def top_n_products(n)
     list_items = user_list_items
 
