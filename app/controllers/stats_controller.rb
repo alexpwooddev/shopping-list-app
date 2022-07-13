@@ -2,35 +2,43 @@ require 'pry'
 
 class StatsController < ApplicationController
   def index
-    # get a user's top 3 products by number of occurrences as a list_item
-    user_lists = current_user.lists
-
-    user_list_items = user_lists.map do |list|
-      list.list_items.map { |item| item }
-    end
-    user_list_items_flat = user_list_items.flatten(1)
-
-    items_grouped_by_product = user_list_items_flat.group_by do |item|
-      item['product_id']
-    end
-
-    product_sums = items_grouped_by_product.map do |group|
-      group[1].map(&:quantity).inject(0, &:+)
-    end
-
-    binding.pry
+    top_n_products(3)
   end
 
 
   private
 
-  # this gets the highest quantity item from each list
-  # NOT what I want...
-  # user_lists.each do |list|
-  #   list_items = list.list_items
-  #   max_quantity_item = list_items.max_by{ |list_item| list_item.quantity }
-  #   puts "max_quant_item", max_quantity_item
-  # end
+  # get a user's top n products by number of occurrences as a list_item
+  def top_n_products(n)
+    list_items = user_list_items
+
+    group_and_sort_products(n, list_items)
+  end
 
 
+  def user_list_items
+    user_lists = current_user.lists
+
+    user_list_items = user_lists.map do |list|
+      list.list_items.map { |item| item }
+    end
+
+    user_list_items.flatten(1)
+  end
+
+
+  def group_and_sort_products(n, list_items)
+    items_grouped_by_product = list_items.group_by { |item| item['product_id'] }
+
+    product_sums = items_grouped_by_product.map do |group|
+      [group[0], group[1].map(&:quantity).inject(0, &:+)]
+    end
+
+    top_n_products_with_id = product_sums.sort_by { |product| product[1] }.reverse!.first(n)
+    top_n_products_with_name = top_n_products_with_id.map do |product|
+      [Product.find_by(id: product[0]).name , product[1]]
+    end
+
+    top_n_products_with_name
+  end
 end
