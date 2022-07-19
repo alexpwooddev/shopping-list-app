@@ -1,13 +1,24 @@
 <h1>Your favourite products</h1>
+<br/>
 <h2>By total quantity ordered</h2>
 <ul>
-  <% @top_products_by_quantity.each do |product| %>
+  <% @user_stats[:top_products_by_quantity].each do |product| %>
     <li><%= product[0] %>: <%= product[1] %> portions ordered</li>
   <% end %>
 </ul>
 <h2>By total entries in your lists</h2>
 <ul>
-  <% @top_products_by_list_occurrence.each do |product| %>
+  <% @user_stats[:top_products_by_list_occurrence].each do |product| %>
     <li><%= product[0] %>: <%= product[1] %> entries in your lists</li>
   <% end %>
+</ul>
+<h2>Overall top products</h2>
+<ul>
+  <% @user_stats[:combined_top_products].each do |product| %>
+    <li><%= product %></li>
+  <% end %>
+</ul>
+<h2>Average health score of your top products</h2>
+<ul>
+    <li><%= @user_stats[:average_health_score] %></li>
 </ul>
