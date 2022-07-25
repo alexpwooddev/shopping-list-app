@@ -2,16 +2,14 @@ require 'pry'
 
 class StatsController < ApplicationController
   def index
-    top_products_by_quantity = top_n_products_by_quantity(3)
-    top_products_by_list_occurrence = top_n_products_by_list_occurrence(3)
-    combined_top_products = combined_top_n_products(3)
-    average_health_score = average_health_score(combined_top_products).round(2)
+    combined_top_products = combined_top_n_products(3, user_list_items)
 
     @user_stats = {
-      top_products_by_quantity: top_products_by_quantity,
-      top_products_by_list_occurrence: top_products_by_list_occurrence,
+      top_products_by_quantity: top_n_products_by_quantity(3, user_list_items),
+      top_products_by_list_occurrence: top_n_products_by_list_occurrence(3, user_list_items),
       combined_top_products: combined_top_products,
-      average_health_score: average_health_score,
+      average_health_score: average_health_score(combined_top_products).round(2),
+      all_users_average_health_score: average_health_score(combined_top_n_products(3, ListItem.all)).round(2)
     }
   end
 
@@ -19,22 +17,20 @@ class StatsController < ApplicationController
   private
 
   #combined top by quantity and by occurrences
-  def combined_top_n_products(n)
-    top_by_quantity_names_only = top_n_products_by_quantity(n).map { |prod_arr| prod_arr[0] }
-    top_by_occurrence_names_only = top_n_products_by_list_occurrence(n).map { |prod_arr| prod_arr[0] }
+  def combined_top_n_products(n, list_items)
+    top_by_quantity_names_only = top_n_products_by_quantity(n, list_items).map { |prod_arr| prod_arr[0] }
+    top_by_occurrence_names_only = top_n_products_by_list_occurrence(n, list_items).map { |prod_arr| prod_arr[0] }
 
     top_by_quantity_names_only.concat(top_by_occurrence_names_only).uniq
   end
 
-  # users top n products by quantity across all lists
-  def top_n_products_by_quantity(n)
-    list_items = user_list_items
+  # top n products by quantity across all lists
+  def top_n_products_by_quantity(n, list_items)
     sort_products(n, list_items)
   end
 
-  # a user's top n products by number of occurrences as a list_item
-  def top_n_products_by_list_occurrence(n)
-    list_items = user_list_items
+  # top n products by number of occurrences as a list_item
+  def top_n_products_by_list_occurrence(n, list_items)
     items_grouped_by_product = group_items_by_product(list_items)
     product_occurrences_with_id = sum_product_occurrences(items_grouped_by_product)
     product_occurrences_with_name = convert_products_with_id_to_name(product_occurrences_with_id)
