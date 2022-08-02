@@ -16,11 +16,16 @@ User.all.each do |u|
   end
 end
 
-List.all.each do |l|
-  l.list_items.create(product_id: 1, quantity: 1)
-  l.list_items.create(product_id: 2, quantity: 6)
-  l.list_items.create(product_id: 3, quantity: 2)
-  l.list_items.create(product_id: 4, quantity: 8)
-  l.list_items.create(product_id: 5, quantity: 1)
+List.all.each do |list|
+  list.list_items.create(product_id: 1, quantity: 1)
+  list.list_items.create(product_id: 2, quantity: 6)
+  list.list_items.create(product_id: 3, quantity: 2)
+  list.list_items.create(product_id: 4, quantity: 8)
+  list.list_items.create(product_id: 5, quantity: 1)
 end
 
+lists_shuffled = List.all.shuffle
+8.times do
+  list = lists_shuffled.pop
+  list.published = true
+end
