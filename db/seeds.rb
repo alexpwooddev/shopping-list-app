@@ -11,7 +11,7 @@ Product.create({:name=>"cheese", :description => "aged cheddar"})
 
 User.all.each do |u|
   10.times do |i|
-    u.lists.create(title: "ListPreview #{i+1} for #{u.email}", complete: i % 3 ? true : false )
+    u.lists.create(title: "ListPreview #{i+1} for #{u.email}", complete: i % 2 == 0 ? true : false, published: i % 2 == 0 ? true : false )
     u.saved_qrs.create(product_id: i+1, quantity: 1)
   end
 end
@@ -24,8 +24,8 @@ List.all.each do |list|
   list.list_items.create(product_id: 5, quantity: 1)
 end
 
-lists_shuffled = List.all.shuffle
-8.times do
-  list = lists_shuffled.pop
-  list.published = true
-end
+# lists_shuffled = List.all.shuffle
+# 8.times do
+#   list = lists_shuffled.pop
+#   list.published = true
+# end

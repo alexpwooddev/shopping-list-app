@@ -7,12 +7,16 @@ import setAxiosHeaders from "./AxiosHeaders";
 
 const ListPreview = ({list, getLists, hideCompletedLists, handleErrors, clearErrors}) => {
     const [complete, setComplete] = useState(list.complete);
+    const [published, setPublished] = useState(list.published);
     const completedRef = useRef();
+    const publishedRef = useRef();
     const inputRef = useRef();
     const path = `/api/v1/lists/${list.id}`
+    console.log(list);
 
     const handleChange = () => {
         setComplete(completedRef.current.checked);
+        setPublished(publishedRef.current.checked);
         updateList();
     }
 
@@ -22,7 +26,8 @@ const ListPreview = ({list, getLists, hideCompletedLists, handleErrors, clearErr
             .put(path, {
                 list: {
                     title: inputRef.current.value,
-                    complete: completedRef.current.checked
+                    complete: completedRef.current.checked,
+                    published: publishedRef.current.checked
                 }
             })
             .then(response => {
@@ -77,6 +82,23 @@ const ListPreview = ({list, getLists, hideCompletedLists, handleErrors, clearErr
                         htmlFor={`complete-${list.id}`}
                     >
                         Complete?
+                    </label>
+                </div>
+                <div className="form-check form-check-inline">
+                    <input
+                        type="boolean"
+                        defaultChecked={published}
+                        type="checkbox"
+                        onChange={handleChange}
+                        ref={publishedRef}
+                        className="form-check-input"
+                        id={`published-${list.id}`}
+                    />
+                    <label
+                        className="form-check-label"
+                        htmlFor={`published-${list.id}`}
+                    >
+                        Published?
                     </label>
                 </div>
                 <a href={`/lists/${list.id}`} className="btn btn-outline-primary mx-1">Edit</a>
