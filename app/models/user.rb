@@ -6,4 +6,5 @@ class User < ApplicationRecord
 
   has_many :lists, dependent: :destroy
   has_many :saved_qrs, dependent: :destroy
+  has_many :favourited_lists, dependent: :destroy
 end

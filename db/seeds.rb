@@ -9,12 +9,16 @@ Product.create({:name=>"bread", :description => "sliced white break"})
 Product.create({:name=>"bacon", :description => "streaky bacon"})
 Product.create({:name=>"cheese", :description => "aged cheddar"})
 
-User.all.each do |u|
+User.all.each do |user|
   10.times do |i|
-    u.lists.create(title: "List #{i+1} for #{u.email}", complete: i % 2 == 0 ? true : false, published: i % 2 == 0 ? true : false )
-    u.saved_qrs.create(product_id: i+1, quantity: 1)
+    user.lists.create(title: "List #{i+1} for #{user.email}", complete: i % 2 == 0 ? true : false, published: i % 2 == 0 ? true : false )
+    user.saved_qrs.create(product_id: i+1, quantity: 1)
+    # user.favourited_lists.create(list_id: i+1)
   end
 end
+
+User.first.favourited_lists.create(list_id: User.last.lists.first.id)
+User.last.favourited_lists.create(list_id: User.first.lists.first.id)
 
 List.all.each do |list|
   list.list_items.create(product_id: 1, quantity: 1)
@@ -24,8 +28,3 @@ List.all.each do |list|
   list.list_items.create(product_id: 5, quantity: 1)
 end
 
-# lists_shuffled = List.all.shuffle
-# 8.times do
-#   list = lists_shuffled.pop
-#   list.published = true
-# end
