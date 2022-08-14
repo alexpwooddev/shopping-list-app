@@ -1,8 +1,7 @@
 FactoryBot.define do
   factory :user do
-    email { "user-1@example.com" }
+    sequence(:email) { |n| "user-#{n}@example.com" }
     password { "password" }
-    id { 1 }
 
     factory :user_with_lists do
       transient do
@@ -54,7 +53,7 @@ FactoryBot.define do
       end
     end
 
-    factory :user_with_favourited_lists do
+    factory :user_with_favourited_list do
       transient do
         favourited_lists_count { 1 }
       end
@@ -64,11 +63,5 @@ FactoryBot.define do
       end
     end
 
-  end
-
-  factory :another_user do
-    email { "user-2@example.com" }
-    password { "password" }
-    id { 2 }
   end
 end

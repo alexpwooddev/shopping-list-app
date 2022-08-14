@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe "PublishedLists", type: :request do
 
   describe "GET /index" do
-    # TODO
-    # need a user with favourited_list FROM another user
-    # let!(:user) { FactoryBot.create(:user_with_lists)}
+    let!(:user) { FactoryBot.create(:user)}
+    let!(:another_user) { FactoryBot.create(:user)}
+    let!(:favourited_list) { FactoryBot.create(:favourited_list)}
 
     context "when not authenticated" do
       it "redirects to users/sign in" do
@@ -17,8 +17,13 @@ RSpec.describe "PublishedLists", type: :request do
 
     context "when authenticated" do
       it "returns index with at least one item" do
+        favourited_list.user = another_user
+
+        sign_in(user, :scope => :user)
         get "/favourited_lists"
-        # TODO
+        expect(response).to have_http_status(:success)
+        expect(response).to render_template(:index)
+        expect(response.body).to include("<li")
       end
     end
 
