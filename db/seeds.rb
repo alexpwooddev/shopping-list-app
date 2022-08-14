@@ -13,12 +13,11 @@ User.all.each do |user|
   10.times do |i|
     user.lists.create(title: "List #{i+1} for #{user.email}", complete: i % 2 == 0 ? true : false, published: i % 2 == 0 ? true : false )
     user.saved_qrs.create(product_id: i+1, quantity: 1)
-    # user.favourited_lists.create(list_id: i+1)
   end
 end
 
-User.first.favourited_lists.create(list_id: User.last.lists.first.id)
-User.last.favourited_lists.create(list_id: User.first.lists.first.id)
+User.first.favourited_lists.create(list_id: User.last.lists.last.id)
+User.last.favourited_lists.create(list_id: User.first.lists.last.id)
 
 List.all.each do |list|
   list.list_items.create(product_id: 1, quantity: 1)
