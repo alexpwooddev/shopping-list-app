@@ -15,4 +15,10 @@ class FavouritedListsController < ApplicationController
       { title: list.title, items: items_with_names}
     end
   end
+
+  def create
+    binding.pry()
+    @favourited_list = List.find(params[:list_id])
+
+  end
 end

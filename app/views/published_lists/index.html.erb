@@ -6,5 +6,5 @@
       <li><%= item[:name]%>: <%= item[:quantity] %></li>
     <% end %>
   </ul>
-
+  <%= button_to 'Add to favourites', favourited_lists_path(list), method: :post %>
 <% end %>
