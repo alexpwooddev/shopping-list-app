@@ -12,7 +12,7 @@ class PublishedListsController < ApplicationController
         { name: product.name, quantity: item.quantity }
       end
 
-      { title: list.title, items: items_with_names }
+      { id: list.id, title: list.title, items: items_with_names }
     end
   end
 end

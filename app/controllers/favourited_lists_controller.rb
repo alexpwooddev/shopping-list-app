@@ -17,8 +17,19 @@ class FavouritedListsController < ApplicationController
   end
 
   def create
-    binding.pry()
-    @favourited_list = List.find(params[:list_id])
+    list = List.find(params[:id])
+    favourite_list = FavouritedList.new(user: current_user, list: list)
+
+    if favourite_list.save
+      redirect_to(favourited_lists_path)
+      flash[:success] = "List added to favourites"
+    else
+      redirect_to(favourited_lists_path)
+      flash[:warn] = "There was a problem adding that list"
+    end
+
+    # TODO
+    # also, published lists shouldn't show the user's own published ones
 
   end
 end
