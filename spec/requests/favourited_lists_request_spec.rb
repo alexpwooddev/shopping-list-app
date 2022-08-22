@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "PublishedLists", type: :request do
+RSpec.describe "FavouritedLists", type: :request do
 
   describe "GET /index" do
     let!(:user) { FactoryBot.create(:user)}
@@ -50,7 +50,7 @@ RSpec.describe "PublishedLists", type: :request do
         expect(response).to redirect_to(favourited_lists_path)
       end
 
-      it "redirects tto published_lists if attempts to favourite twice" do
+      it "redirects to published_lists if attempts to favourite twice" do
         sign_in(user, :scope => :user)
         list_id = user.favourited_lists.first.list_id
 
@@ -60,6 +60,24 @@ RSpec.describe "PublishedLists", type: :request do
       end
     end
 
+  end
+
+  describe "DELETE /destroy" do
+    let!(:user) { FactoryBot.create(:user)}
+    let!(:favourited_list) { FactoryBot.create(:favourited_list)}
+
+    context "when not authenticated" do
+      # TODO
+      it "redirects to users/sign_in" do
+        delete "/favourited_lists/#{favourited_list.id}"
+        expect(response).to have_http_status(:redirect)
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "when authenticated" do
+      # TODO
+    end
   end
 
 end

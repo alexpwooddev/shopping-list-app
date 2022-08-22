@@ -2,10 +2,45 @@ class FavouritedListsController < ApplicationController
 
   def index
     favourited_lists = current_user.favourited_lists
-    favourited_lists_with_details = favourited_lists.map do |list|
+    favourited_lists_with_details = get_favourited_lists_with_details(favourited_lists)
+    @favourited_lists_with_items = get_favourited_lists_with_items(favourited_lists_with_details)
+  end
+
+  def create
+    favourited_list = FavouritedList.new(user: current_user, list: List.find(params[:id]))
+
+    if favourited_list.save
+      flash[:success] = "List added to favourites"
+      redirect_to(favourited_lists_path)
+    else
+      flash[:warn] = "There was a problem adding that list - you might have previously added it"
+      redirect_to(published_lists_path)
+    end
+  end
+
+  def destroy
+    # TODO
+    favourited_list = FavouritedList.find(params[:id])
+    if authorized?(favourited_list)
+      favourited_list.destroy
+    else
+      handle_unauthorized
+    end
+
+  end
+
+
+  private
+
+
+  def get_favourited_lists_with_details(favourited_lists)
+    favourited_lists.map do |list|
       List.find_by(id: list.list_id)
     end
-    @favourited_lists_with_items = favourited_lists_with_details.map do |list|
+  end
+
+  def get_favourited_lists_with_items(favourited_lists_with_details)
+    favourited_lists_with_details.map do |list|
       items = ListItem.where(list_id: list.id)
       items_with_names = items.map do |item|
         product = Product.find_by(id: item.product_id)
@@ -16,16 +51,12 @@ class FavouritedListsController < ApplicationController
     end
   end
 
-  def create
-    list = List.find(params[:id])
-    favourited_list = FavouritedList.new(user: current_user, list: list)
-
-    if favourited_list.save
-      flash[:success] = "List added to favourites"
-      redirect_to(favourited_lists_path)
-    else
-      flash[:warn] = "There was a problem adding that list - you might have previously added it"
-      redirect_to(published_lists_path)
-    end
+  def authorized?(favourited_list)
+    favourited_list.user == current_user
   end
+
+  def handle_unauthorized
+    flash[:warn] = "You aren't authorized to do that."
+  end
+
 end

@@ -18,8 +18,9 @@ Rails.application.routes.draw do
   resources :saved_qrs, only: [:index, :show, :edit, :update, :destroy]
   get 'stats', to: 'stats#index'
   get 'published_lists', to: 'published_lists#index'
-  get 'favourited_lists', to: 'favourited_lists#index'
-  post 'favourited_lists', to: 'favourited_lists#create'
+  resources :favourited_lists, only: [:index, :create, :destroy]
+  # get 'favourited_lists', to: 'favourited_lists#index'
+  # post 'favourited_lists', to: 'favourited_lists#create'
 
   get '/404', to: 'errors#not_found'
   get '/500', to: 'errors#internal_server'
