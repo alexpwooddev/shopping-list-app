@@ -141,21 +141,21 @@ RSpec.describe "SavedQrs", type: :request do
     end
 
     context "when authenticated" do
-      it "deletes the user's saved_qr" do
+      it "does nothing if not authorized" do
         sign_in(user, :scope => :user)
-        saved_qr = user.saved_qrs.first
-        assert_difference "SavedQr.count", -1 do
-          delete "/saved_qrs/#{saved_qr.id.to_s}"
+        another_users_saved_qr = another_user_with_saved_qrs.saved_qrs.first
+        assert_no_difference "SavedQr.count" do
+          delete "/saved_qrs/#{another_users_saved_qr.id.to_s}"
         end
         expect(response).to have_http_status(:redirect)
         expect(response).to redirect_to(saved_qrs_path)
       end
 
-      it "doesn't allow deletion of another user's saved_qr" do
+      it "deletes the user's saved_qr" do
         sign_in(user, :scope => :user)
-        another_users_saved_qr = another_user_with_saved_qrs.saved_qrs.first
-        assert_no_difference "SavedQr.count" do
-          delete "/saved_qrs/#{another_users_saved_qr.id.to_s}"
+        saved_qr = user.saved_qrs.first
+        assert_difference "SavedQr.count", -1 do
+          delete "/saved_qrs/#{saved_qr.id.to_s}"
         end
         expect(response).to have_http_status(:redirect)
         expect(response).to redirect_to(saved_qrs_path)

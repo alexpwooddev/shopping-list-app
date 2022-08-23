@@ -2,8 +2,8 @@ class FavouritedListsController < ApplicationController
 
   def index
     favourited_lists = current_user.favourited_lists
-    favourited_lists_with_details = get_favourited_lists_with_details(favourited_lists)
-    @favourited_lists_with_items = get_favourited_lists_with_items(favourited_lists_with_details)
+    favourited_lists_with_lists = get_favourited_lists_with_lists(favourited_lists)
+    @favourited_lists_with_items = get_favourited_lists_with_items(favourited_lists_with_lists)
   end
 
   def create
@@ -19,10 +19,11 @@ class FavouritedListsController < ApplicationController
   end
 
   def destroy
-    # TODO
     favourited_list = FavouritedList.find(params[:id])
     if authorized?(favourited_list)
       favourited_list.destroy
+      flash[:success] = "List removed"
+      redirect_to(favourited_lists_path)
     else
       handle_unauthorized
     end
@@ -33,21 +34,26 @@ class FavouritedListsController < ApplicationController
   private
 
 
-  def get_favourited_lists_with_details(favourited_lists)
-    favourited_lists.map do |list|
-      List.find_by(id: list.list_id)
+  def get_favourited_lists_with_lists(favourited_lists)
+    favourited_lists.map do |favourited_list|
+      {
+        favourited_list: favourited_list,
+        list: List.find_by(id: favourited_list.list_id)
+      }
     end
   end
 
-  def get_favourited_lists_with_items(favourited_lists_with_details)
-    favourited_lists_with_details.map do |list|
-      items = ListItem.where(list_id: list.id)
+  def get_favourited_lists_with_items(favourited_lists_with_lists)
+    favourited_lists_with_lists.map do |fav_list_with_list|
+      items = ListItem.where(list_id: fav_list_with_list[:list].id)
       items_with_names = items.map do |item|
         product = Product.find_by(id: item.product_id)
         { name: product.name, quantity: item.quantity }
       end
 
-      { title: list.title, items: items_with_names}
+      { title: fav_list_with_list[:list].title,
+        items: items_with_names,
+        favourited_list_id: fav_list_with_list[:favourited_list].id }
     end
   end
 
@@ -56,7 +62,7 @@ class FavouritedListsController < ApplicationController
   end
 
   def handle_unauthorized
-    flash[:warn] = "You aren't authorized to do that."
+    flash[:warn] = "You aren't authorized to do that"
   end
 
 end

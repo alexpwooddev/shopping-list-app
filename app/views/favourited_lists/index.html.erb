@@ -7,5 +7,10 @@
       <li><%= item[:name]%>: <%= item[:quantity] %></li>
     <% end %>
   </ul>
-
+  <%= button_to 'Remove from favourites',
+                {:controller => :favourited_lists,
+                 :action => 'destroy',
+                 :id => list[:favourited_list_id] },
+                method: :delete %>
+  <hr />
 <% end %>

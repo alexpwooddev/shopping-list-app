@@ -63,11 +63,11 @@ RSpec.describe "FavouritedLists", type: :request do
   end
 
   describe "DELETE /destroy" do
-    let!(:user) { FactoryBot.create(:user)}
+    let!(:user) { FactoryBot.create(:user_with_favourited_list)}
+    let!(:another_user) { FactoryBot.create(:user_with_favourited_list)}
     let!(:favourited_list) { FactoryBot.create(:favourited_list)}
 
     context "when not authenticated" do
-      # TODO
       it "redirects to users/sign_in" do
         delete "/favourited_lists/#{favourited_list.id}"
         expect(response).to have_http_status(:redirect)
@@ -76,7 +76,22 @@ RSpec.describe "FavouritedLists", type: :request do
     end
 
     context "when authenticated" do
-      # TODO
+      it "does nothing if not authorized" do
+        sign_in(another_user, :scope => :user)
+        user_favourited_list = user.favourited_lists.first
+        assert_no_difference "FavouritedList.count" do
+          delete "/favourited_lists/#{user_favourited_list.id}"
+        end
+      end
+
+      it "deletes the user's favourited_list" do
+        sign_in(user, :scope => :user)
+        user_favourited_list = user.favourited_lists.first
+        assert_difference "FavouritedList.count", -1 do
+          delete "/favourited_lists/#{user_favourited_list.id}"
+        end
+        expect(response).to have_http_status(:success)
+      end
     end
   end
 
