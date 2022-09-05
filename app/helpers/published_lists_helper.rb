@@ -1,0 +1,2 @@
+module PublishedListsHelper
+end

@@ -25,7 +25,14 @@ gem 'jbuilder', '~> 2.7'
 gem 'react-rails'
 
 gem 'devise', '~> 4.7', '>= 4.7.1'
+
 gem 'rspec'
+
+gem 'rails-controller-testing'
+
+gem 'pry'
+
+gem 'rest-client'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     root "pages#my_lists", as: :authenticated_root
   end
   root 'pages#home'
+
   get 'lists/:id', to: 'pages#list', as: :list
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
@@ -13,7 +14,13 @@ Rails.application.routes.draw do
       end
     end
   end
-  get 'saved_qrs/show'
-  get 'saved_qrs/edit'
-  get 'saved_qrs/destroy'
+
+  resources :saved_qrs, only: [:index, :show, :edit, :update, :destroy]
+  resources :favourited_lists, only: [:index, :create, :destroy]
+  get 'stats', to: 'stats#index'
+  get 'published_lists', to: 'published_lists#index'
+
+  get '/404', to: 'errors#not_found'
+  get '/500', to: 'errors#internal_server'
+  get '/422', to: 'errors#unprocessable'
 end

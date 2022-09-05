@@ -1,0 +1,12 @@
+<h1>Published Lists</h1>
+<hr />
+<% @lists_with_items.each do |list| %>
+  <h2><%= list[:title] %></h2>
+  <ul>
+    <% list[:items].each do |item| %>
+      <li><%= item[:name]%>: <%= item[:quantity] %></li>
+    <% end %>
+  </ul>
+  <%= button_to 'Add to favourites', favourited_lists_path(list), method: :post %>
+  <hr />
+<% end %>
