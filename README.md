@@ -1,24 +1,14 @@
-# README
+# Shopping List Hub
+[WORK IN PROGRESS - not deployed]
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Description
+Shopping list tool created with Ruby, Ruby on Rails, React, Devise, Rspec and Microsoft Computer Vision API.
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Features
+- Create lists 
+- Search and add individual items to lists from the database of available products
+- Add items to lists from uploaded images of shopping lists
+- Save items (with quantities) or entire lists as QR codes to print and scan later
+- View your personal statistics, including your most listed items and their health ratings
+- View and rate other users' published lists and publish your own for others to see
+- Save/favourite other users' lists to use yourself
